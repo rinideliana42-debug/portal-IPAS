@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Projek IPAS SMK Kelas X | SMK Negeri 1 Karang Baru</title>
+    <meta name="description" content="Portal pembelajaran interaktif Projek IPAS untuk peserta didik kelas X SMK Negeri 1 Karang Baru — modul ajar, aktivitas projek, simulator, dan kuis penilaian.">
+    <link rel="icon" type="image/png" href="https://smkn1karangbaru.sch.id/storage/logos/OrHk18Ac6o0WNik7QiFDH5ifNS0jQsjkacaynCTG.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e', // Hijau IPAS (Sains)
+                            600: '#16a34a',
+                            700: '#15803d',
+                            950: '#052e16',
+                        },
+                        social: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6', // Biru IPAS (Sosial)
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .option-btn.selected {
+            border-color: #22c55e;
+            background-color: #f0fdf4;
+        }
+        .option-btn.correct {
+            border-color: #22c55e;
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .option-btn.wrong {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+        .scrollbar-hidden::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hidden {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white overflow-hidden">
+
+    <!-- ==================== GERBANG LOGIN PESERTA DIDIK ==================== -->
+    <div id="login-gate" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-950">
+        <!-- Background decor -->
+        <div class="absolute inset-0 -z-10 bg-gradient-to-br from-brand-950 via-slate-950 to-social-950"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-social-500/20 rounded-full blur-3xl -z-10"></div>
+
+        <div class="w-full max-w-lg my-8">
+            <!-- Header sekolah -->
+            <div class="text-center mb-6">
+                <img src="https://smkn1karangbaru.sch.id/storage/logos/OrHk18Ac6o0WNik7QiFDH5ifNS0jQsjkacaynCTG.png" alt="Logo SMKN 1 Karang Baru" class="w-20 h-20 object-contain mx-auto mb-4 drop-shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/100x100/22c55e/ffffff?text=SMK';">
+                <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-[11px] font-bold uppercase tracking-widest mb-3 border border-white/10">SMK Negeri 1 Karang Baru</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Portal Pembelajaran Projek IPAS</h1>
+                <p class="text-slate-400 text-sm max-w-sm mx-auto">Khusus untuk peserta didik kelas X. Silakan isi identitas dan pilih kelas Anda untuk mulai belajar.</p>
+            </div>
+
+            <!-- Kartu Login -->
+            <div class="glass-card rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-100">
+                <div class="mb-5">
+                    <label for="login-nama" class="block text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">
+                        <i class="fas fa-user mr-1.5 text-brand-600"></i> Nama Peserta Didik
+                    </label>
+                    <input type="text" id="login-nama" placeholder="Tulis nama lengkap Anda" autocomplete="off"
+                        class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 outline-none transition text-slate-800 font-medium"
+                        onkeydown="if(event.key==='Enter'){event.preventDefault(); masukPortal();}">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2">
+                        <i class="fas fa-users mr-1.5 text-social-600"></i> Pilih Kelas Anda
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="pilihKelasLogin('X DKV 1', this)" class="kelas-login-btn px-3 py-4 rounded-xl border-2 border-slate-200 bg-white text-center hover:border-brand-400 transition group">
+                            <span class="block text-lg font-extrabold text-slate-800 group-hover:text-brand-700">X DKV 1</span>
+                            <span class="block text-[10px] text-slate-400 font-semibold uppercase mt-0.5">Desain Komunikasi Visual</span>
+                        </button>
+                        <button type="button" onclick="pilihKelasLogin('X DKV 2', this)" class="kelas-login-btn px-3 py-4 rounded-xl border-2 border-slate-200 bg-white text-center hover:border-brand-400 transition group">
+                            <span class="block text-lg font-extrabold text-slate-800 group-hover:text-brand-700">X DKV 2</span>
+                            <span class="block text-[10px] text-slate-400 font-semibold uppercase mt-0.5">Desain Komunikasi Visual</span>
+                        </button>
+                        <button type="button" onclick="pilihKelasLogin('X RPL 1', this)" class="kelas-login-btn px-3 py-4 rounded-xl border-2 border-slate-200 bg-white text-center hover:border-social-400 transition group">
+                            <span class="block text-lg font-extrabold text-slate-800 group-hover:text-social-700">X RPL 1</span>
+                            <span class="block text-[10px] text-slate-400 font-semibold uppercase mt-0.5">Rekayasa Perangkat Lunak</span>
+                        </button>
+                        <button type="button" onclick="pilihKelasLogin('X RPL 2', this)" class="kelas-login-btn px-3 py-4 rounded-xl border-2 border-slate-200 bg-white text-center hover:border-social-400 transition group">
+                            <span class="block text-lg font-extrabold text-slate-800 group-hover:text-social-700">X RPL 2</span>
+                            <span class="block text-[10px] text-slate-400 font-semibold uppercase mt-0.5">Rekayasa Perangkat Lunak</span>
+                        </button>
+                    </div>
+                </div>
+
+                <p id="login-error" class="hidden text-xs text-red-600 font-semibold mb-3 text-center">
+                    <i class="fas fa-circle-exclamation mr-1"></i> Mohon isi nama dan pilih kelas terlebih dahulu.
+                </p>
+
+                <button id="btn-masuk-portal" onclick="masukPortal()" disabled
+                    class="w-full py-3.5 rounded-xl bg-brand-600 text-white font-bold text-sm tracking-wide hover:bg-brand-700 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                    <i class="fas fa-right-to-bracket"></i> Masuk ke Portal Belajar
+                </button>
+            </div>
+
+            <p class="text-center text-slate-500 text-[11px] mt-6">
+                &copy; 2026 Portal Pembelajaran Projek IPAS &bull; SMK Negeri 1 Karang Baru
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== KONTEN UTAMA PORTAL ==================== -->
+    <div id="main-site" class="hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="https://smkn1karangbaru.sch.id/storage/logos/OrHk18Ac6o0WNik7QiFDH5ifNS0jQsjkacaynCTG.png" alt="Logo SMKN 1 Karang Baru" class="w-12 h-12 object-contain transform hover:scale-105 transition" onerror="this.onerror=null; this.src='https://placehold.co/100x100/22c55e/ffffff?text=SMK';">
+                    <div>
+                        <span class="font-extrabold text-xl sm:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-brand-700 to-social-600">Projek IPAS</span>
+                        <span class="block text-[10px] text-slate-500 font-bold tracking-widest uppercase">SMK Negeri 1 Karang Baru</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="#beranda" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Beranda</a>
+                    <a href="#kurikulum" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Daftar Bab</a>
+                    <a href="#ruang-belajar" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Ruang Belajar</a>
+                    <a href="#ruang-belajar" onclick="focusSimulator()" class="px-5 py-2.5 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fas fa-flask mr-2"></i>Coba Simulator
+                    </a>
+                    <div id="siswa-info-badge" class="hidden items-center gap-2 pl-4 ml-2 border-l border-slate-200">
+                        <span class="w-8 h-8 rounded-full bg-social-100 text-social-700 flex items-center justify-center text-sm shrink-0">
+                            <i class="fas fa-user-graduate"></i>
+                        </span>
+                        <div class="leading-tight">
+                            <span id="siswa-info-nama" class="block text-xs font-bold text-slate-800"></span>
+                            <span id="siswa-info-kelas" class="block text-[10px] text-slate-500 font-semibold uppercase tracking-wide"></span>
+                        </div>
+                        <button onclick="keluarPortal()" title="Keluar / Ganti Kelas" class="ml-1 w-7 h-7 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition">
+                            <i class="fas fa-right-from-bracket text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-brand-600 focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#beranda" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-brand-600 hover:bg-brand-50">Beranda</a>
+                <a href="#kurikulum" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-brand-600 hover:bg-brand-50">Daftar Bab</a>
+                <a href="#ruang-belajar" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-brand-600 hover:bg-brand-50">Ruang Belajar</a>
+                <a href="#ruang-belajar" onclick="focusSimulator()" class="block px-3 py-3 mt-4 text-center rounded-md text-base font-medium bg-emerald-600 text-white hover:bg-emerald-700">Coba Simulator</a>
+                <div id="siswa-info-badge-mobile" class="hidden mt-4 pt-4 border-t border-slate-100 flex items-center justify-between px-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-full bg-social-100 text-social-700 flex items-center justify-center text-sm shrink-0">
+                            <i class="fas fa-user-graduate"></i>
+                        </span>
+                        <div class="leading-tight">
+                            <span id="siswa-info-nama-mobile" class="block text-xs font-bold text-slate-800"></span>
+                            <span id="siswa-info-kelas-mobile" class="block text-[10px] text-slate-500 font-semibold uppercase tracking-wide"></span>
+                        </div>
+                    </div>
+                    <button onclick="keluarPortal()" class="text-xs font-semibold text-red-600 hover:text-red-700 flex items-center gap-1">
+                        <i class="fas fa-right-from-bracket"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden min-h-[90vh] flex items-center">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-50 via-white to-social-50 -z-10"></div>
+        <div class="absolute top-20 right-0 w-96 h-96 bg-brand-200 rounded-full mix-blend-multiply filter blur-3xl opacity-35 animate-pulse -z-10"></div>
+        <div class="absolute bottom-10 left-10 w-72 h-72 bg-social-200 rounded-full mix-blend-multiply filter blur-3xl opacity-35 animate-pulse -z-10" style="animation-delay: 2s;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="lg:col-span-7 text-center lg:text-left">
+                    <div class="flex flex-col sm:flex-row gap-3 items-center justify-center lg:justify-start mb-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-100 text-brand-800 font-semibold text-xs sm:text-sm border border-brand-200">
+                            <i class="fas fa-school text-brand-600"></i> SMK Negeri 1 Karang Baru
+                        </div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-social-100 text-social-800 font-semibold text-xs sm:text-sm border border-social-200">
+                            <i class="fas fa-user-tie text-social-600"></i> RINI DELIANA, S.T., M.Pd.
+                        </div>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
+                        Kuasai Projek IPAS <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-social-600">Eksplorasi Vokasional</span>
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Platform e-learning interaktif Projek Ilmu Pengetahuan Alam dan Sosial khusus untuk <strong>siswa kelas X SMK</strong>. Dirancang khusus untuk membantu Anda <strong>Memahami</strong> konsep, <strong>Mengaplikasikan</strong> lewat projek kejuruan, dan <strong>Merefleksikan</strong> dampaknya bagi kehidupan & industri.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#kurikulum" class="px-8 py-4 rounded-xl bg-brand-600 text-white font-bold text-base hover:bg-brand-700 transition shadow-lg hover:shadow-xl text-center flex items-center justify-center gap-2">
+                            <i class="fas fa-th-list"></i> Pilih Bab Belajar
+                        </a>
+                        <a href="#ruang-belajar" class="px-8 py-4 rounded-xl bg-white text-slate-700 border-2 border-slate-200 font-bold text-base hover:border-brand-600 hover:text-brand-600 transition text-center flex items-center justify-center gap-2">
+                            <i class="fas fa-chalkboard-teacher"></i> Ruang Belajar Aktif
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Interactive Card Info -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative w-full max-w-md mx-auto">
+                        <!-- Card -->
+                        <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 transform hover:scale-[1.02] transition duration-300">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Informasi Kelas</span>
+                                <span class="px-2.5 py-1 rounded-full bg-social-50 text-social-700 font-bold text-[10px]">SMK KELAS X</span>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">Struktur Pembelajaran IPAS</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4 p-3 bg-brand-50/50 rounded-xl">
+                                    <div class="w-10 h-10 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center text-lg shrink-0">
+                                        <i class="fas fa-book-reader"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-sm">6 Modul Ajar</h4>
+                                        <p class="text-xs text-slate-500">Materi sains terintegrasi aspek sosial & industri.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 p-3 bg-social-50/50 rounded-xl">
+                                    <div class="w-10 h-10 rounded-lg bg-social-100 text-social-700 flex items-center justify-center text-lg shrink-0">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-sm">6 Projek Terapan SMK</h4>
+                                        <p class="text-xs text-slate-500">Tugas projek kontekstual sesuai rumpun keahlian.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 p-3 bg-purple-50 rounded-xl">
+                                    <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-lg shrink-0">
+                                        <i class="fas fa-tasks"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-sm">Asesmen Mandiri Interaktif</h4>
+                                        <p class="text-xs text-slate-500">Sistem evaluasi kuis instan di setiap akhir bab.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pilar Pembelajaran Section -->
+    <section class="py-12 bg-white relative z-10 -mt-8 mx-4 md:mx-auto max-w-6xl rounded-3xl shadow-xl border border-slate-100">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 sm:px-10">
+            <div class="text-center p-4">
+                <div class="w-14 h-14 mx-auto bg-brand-100 text-brand-700 rounded-2xl flex items-center justify-center text-xl mb-4 transform -rotate-3">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-1 text-slate-900">1. Memahami</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Mengeksplorasi konsep dasar alam dan sosial yang relevan dengan perkembangan sains terkini.</p>
+            </div>
+            <div class="text-center p-4 border-t md:border-t-0 md:border-l border-slate-100">
+                <div class="w-14 h-14 mx-auto bg-social-100 text-social-700 rounded-2xl flex items-center justify-center text-xl mb-4 transform rotate-3">
+                    <i class="fas fa-vial"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-1 text-slate-900">2. Mengaplikasi</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Mewujudkan pengetahuan dalam bentuk kerja nyata projek, eksperimen, dan inovasi SMK.</p>
+            </div>
+            <div class="text-center p-4 border-t md:border-t-0 md:border-l border-slate-100">
+                <div class="w-14 h-14 mx-auto bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-xl mb-4 transform -rotate-1">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-1 text-slate-900">3. Merefleksi</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Mengevaluasi hasil pemecahan masalah serta hubungannya dengan lingkungan hidup & sosial.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kurikulum / Daftar Bab Section -->
+    <section id="kurikulum" class="py-24 bg-slate-50 scroll-mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-brand-600 font-extrabold tracking-wide uppercase text-xs sm:text-sm mb-2">Peta Kurikulum SMK</h2>
+                <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">6 Materi Pokok Projek IPAS</h3>
+                <p class="text-slate-600 text-base sm:text-lg">Silakan pilih bab di bawah ini untuk memuat seluruh materi, panduan projek, dan kuis penilaian interaktif di Ruang Belajar.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Bab 1 -->
+                <div onclick="pilihBab(1)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-6 font-bold">01</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">Makhluk Hidup & Lingkungannya</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Interaksi komponen biotik-abiotik, ekosistem, rantai makanan, serta mitigasi pencemaran lingkungan hidup sekitar.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Sains Terapan</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-emerald-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Bab 2 -->
+                <div onclick="pilihBab(2)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-teal-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl mb-6 font-bold">02</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-teal-600 transition-colors">Zat & Perubahannya</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Klasifikasi zat tunggal & campuran, sifat fisika-kimia, perubahan wujud zat, serta teknik pemisahan campuran industri.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2.5 py-1 rounded-full">Sains Terapan</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-teal-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Bab 3 -->
+                <div onclick="pilihBab(3)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mb-6 font-bold">03</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">Energi & Perubahannya</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Bentuk-bentuk energi, hukum kekekalan energi, perubahan energi mekanik, kalor, serta pemanfaatan energi terbarukan.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">Energi & Teknologi</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-amber-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Bab 4 -->
+                <div onclick="pilihBab(4)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl mb-6 font-bold">04</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">Keruangan & Konektivitas</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Kondisi geografis Indonesia, konektivitas antarruang & waktu, peta tematik, serta mitigasi bencana wilayah.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Sosial Geografis</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-blue-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Bab 5 -->
+                <div onclick="pilihBab(5)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-6 font-bold">05</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Interaksi, Sosialisasi & Institusi</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Proses sosial, macam-macam interaksi, penanaman norma masyarakat, peran lembaga sosial, & dinamika sosial digital.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">Sosial Kemasyarakatan</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-indigo-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Bab 6 -->
+                <div onclick="pilihBab(6)" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-violet-500/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl mb-6 font-bold">06</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-violet-600 transition-colors">Perilaku Ekonomi & Kesejahteraan</h4>
+                    <p class="text-slate-500 text-xs sm:text-sm mb-4 line-clamp-3">Prinsip ekonomi, kelangkaan, pasar, serta literasi pengelolaan keuangan kreatif untuk bekal kewirausahaan SMK.</p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <span class="text-xs font-bold text-violet-600 bg-violet-50 px-2.5 py-1 rounded-full">Sosial Ekonomi</span>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-violet-600 flex items-center gap-1 transition">Belajar Sekarang <i class="fas fa-chevron-right text-[10px]"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ruang Belajar Section -->
+    <section id="ruang-belajar" class="py-24 bg-white border-t border-slate-200 scroll-mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Active Chapter Indicator Header -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 mb-12 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-xs font-semibold text-brand-400 mb-3 border border-white/10">
+                        <i class="fas fa-bookmark"></i> Bab Aktif Dipilih
+                    </div>
+                    <h3 id="active-bab-num-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight">Bab 1: Makhluk Hidup dan Lingkungannya</h3>
+                    <p id="active-bab-desc" class="text-slate-300 text-xs sm:text-sm mt-2 max-w-2xl">Mempelajari interaksi antar makhluk hidup, rantai makanan, jaring-jaring makanan, ekosistem, serta penanganan AMDAL industri.</p>
+                </div>
+                <div class="flex items-center gap-4 shrink-0 w-full md:w-auto">
+                    <button onclick="pilihBabSebelumnya()" class="flex-1 md:flex-initial px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2">
+                        <i class="fas fa-chevron-left"></i> Bab Sebelumnnya
+                    </button>
+                    <button onclick="pilihBabBerikutnya()" class="flex-1 md:flex-initial px-4 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold text-sm transition flex items-center justify-center gap-2">
+                        Bab Berikutnya <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <!-- Left: Navigation of Learning Tabs -->
+                <div class="lg:col-span-4 space-y-3">
+                    <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest px-2 mb-4">Navigasi Ruang Belajar</h4>
+                    
+                    <button onclick="switchTab('modul-tab')" id="btn-modul-tab" class="w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border-2 border-brand-500 bg-brand-50/50 text-slate-900">
+                        <div class="w-10 h-10 rounded-lg bg-brand-500 text-white flex items-center justify-center text-lg shadow-md shrink-0">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-brand-700 uppercase tracking-wider">Tahap 1</span>
+                            <span class="font-bold text-sm sm:text-base">Modul Ajar (Memahami)</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('aktivitas-tab')" id="btn-aktivitas-tab" class="w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border border-slate-200 hover:border-slate-300 bg-white text-slate-600">
+                        <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-lg shrink-0">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Tahap 2</span>
+                            <span class="font-bold text-sm sm:text-base">Aktivitas Projek (Mengaplikasi)</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('asesmen-tab')" id="btn-asesmen-tab" class="w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border border-slate-200 hover:border-slate-300 bg-white text-slate-600">
+                        <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-lg shrink-0">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Tahap 3</span>
+                            <span class="font-bold text-sm sm:text-base">Asesmen Kuis (Merefleksi)</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('simulator-tab')" id="btn-simulator-tab" class="w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border border-slate-200 hover:border-slate-300 bg-white text-slate-600">
+                        <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-lg shrink-0">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Tahap 4</span>
+                            <span class="font-bold text-sm sm:text-base">Simulator (Eksplorasi)</span>
+                        </div>
+                    </button>
+
+                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 mt-8">
+                        <h5 class="font-bold text-indigo-950 text-sm mb-2"><i class="fas fa-info-circle mr-2 text-indigo-600"></i>Petunjuk Pembelajaran:</h5>
+                        <p class="text-xs text-indigo-800 leading-relaxed">
+                            Bacalah <strong>Modul Ajar</strong> terlebih dahulu, selesaikan instruksi <strong>Aktivitas Projek</strong>, uji pemahaman lewat <strong>Asesmen Kuis</strong>, lalu lakukan eksperimen interaktif di tab <strong>Simulator</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Active Study Tab Content Area -->
+                <div class="lg:col-span-8 bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 min-h-[500px]">
+                    
+                    <!-- TAB 1: MODUL AJAR (MEMAHAMI) -->
+                    <div id="content-modul-tab" class="tab-content block">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center text-sm">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800">Modul Ajar Mandiri</h4>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 border border-slate-200 mb-6">
+                            <h5 class="text-xs font-extrabold text-brand-600 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h5>
+                            <ul id="modul-tujuan" class="list-disc list-inside text-sm text-slate-600 space-y-2 mb-6 leading-relaxed">
+                                <!-- Ditulis oleh JS -->
+                            </ul>
+
+                            <hr class="border-slate-100 my-4">
+
+                            <h5 class="text-xs font-extrabold text-social-600 uppercase tracking-wider mb-3">Ringkasan Materi Utama</h5>
+                            <div id="modul-materi-ringkasan" class="text-sm text-slate-600 leading-relaxed space-y-4">
+                                <!-- Ditulis oleh JS -->
+                            </div>
+                        </div>
+
+                        <!-- Glosarium / Fact Card -->
+                        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl p-5 flex gap-4 items-start">
+                            <div class="text-emerald-600 text-2xl mt-1"><i class="fas fa-lightbulb"></i></div>
+                            <div>
+                                <h6 class="font-bold text-emerald-950 text-sm mb-1">Glosarium Pojok IPAS SMK</h6>
+                                <p id="modul-glosarium" class="text-xs text-emerald-800 leading-relaxed">
+                                    <!-- Ditulis oleh JS -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: AKTIVITAS PROJEK (MENGAPLIKASI) -->
+                    <div id="content-aktivitas-tab" class="tab-content hidden">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded-lg bg-social-100 text-social-700 flex items-center justify-center text-sm">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800">Aktivitas Pembelajaran Berbasis Projek</h4>
+                        </div>
+
+                        <p class="text-slate-500 text-sm mb-6">
+                            Implementasikan teori yang dipelajari pada bab ini ke dalam kerja praktik nyata berkelompok atau mandiri, disesuaikan dengan rumpun SMK Anda.
+                        </p>
+
+                        <!-- Accordion Aktivitas -->
+                        <div class="space-y-4">
+                            <!-- Eksplorasi -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                                <button class="w-full px-5 py-4 text-left bg-slate-50/50 hover:bg-slate-50 focus:outline-none flex justify-between items-center" onclick="toggleAccordion('acc-eksplorasi')">
+                                    <span class="font-bold text-slate-800 text-sm sm:text-base"><i class="fas fa-search text-brand-500 mr-2.5"></i> 1. Eksplorasi (Memahami Masalah)</span>
+                                    <i id="icon-acc-eksplorasi" class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+                                </button>
+                                <div id="acc-eksplorasi" class="p-5 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                                    <!-- Diisi JS -->
+                                </div>
+                            </div>
+
+                            <!-- Kerja Projek -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                                <button class="w-full px-5 py-4 text-left bg-slate-50/50 hover:bg-slate-50 focus:outline-none flex justify-between items-center" onclick="toggleAccordion('acc-projek')">
+                                    <span class="font-bold text-slate-800 text-sm sm:text-base"><i class="fas fa-vial text-social-500 mr-2.5"></i> 2. Penugasan Projek SMK Terapan</span>
+                                    <i id="icon-acc-projek" class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+                                </button>
+                                <div id="acc-projek" class="p-5 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                                    <!-- Diisi JS -->
+                                </div>
+                            </div>
+
+                            <!-- Refleksi -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                                <button class="w-full px-5 py-4 text-left bg-slate-50/50 hover:bg-slate-50 focus:outline-none flex justify-between items-center" onclick="toggleAccordion('acc-refleksi')">
+                                    <span class="font-bold text-slate-800 text-sm sm:text-base"><i class="fas fa-comment-dots text-purple-500 mr-2.5"></i> 3. Evaluasi & Jurnal Refleksi</span>
+                                    <i id="icon-acc-refleksi" class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+                                </button>
+                                <div id="acc-refleksi" class="p-5 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                                    <!-- Diisi JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: ASESMEN KUIS (MEREFLEKSI) -->
+                    <div id="content-asesmen-tab" class="tab-content hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-800">Kuis Evaluasi Pemahaman</h4>
+                            </div>
+                            <span id="quiz-badge-top" class="px-3 py-1 text-xs font-extrabold bg-indigo-50 text-indigo-600 rounded-full">SMK Terapan</span>
+                        </div>
+
+                        <!-- Start Screen -->
+                        <div id="quiz-start" class="text-center py-8">
+                            <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 transform rotate-3">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h4 id="quiz-start-title" class="text-xl font-bold text-slate-900 mb-2">Evaluasi Bab 1</h4>
+                            <p class="text-slate-500 text-xs sm:text-sm mb-6 max-w-md mx-auto">Kuis terdiri atas 5 pertanyaan studi kasus vokasional yang diujikan secara acak. Anda akan langsung melihat feedback jawaban setelah menjawab.</p>
+                            <button onclick="startQuiz()" class="px-8 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm hover:bg-brand-700 transition shadow-lg inline-flex items-center gap-2">
+                                <i class="fas fa-play"></i> Mulai Kuis Sekarang
+                            </button>
+                        </div>
+
+                        <!-- Question Screen -->
+                        <div id="quiz-question-container" class="hidden">
+                            <div class="flex justify-between items-center mb-6 gap-4">
+                                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider shrink-0" id="question-counter">Soal 1 dari 5</span>
+                                <div class="w-full bg-slate-200 rounded-full h-2">
+                                    <div id="quiz-progress" class="bg-brand-500 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            
+                            <h5 id="question-text" class="text-sm sm:text-base font-bold mb-6 text-slate-900 leading-relaxed">
+                                <!-- Pertanyaan akan diisi oleh JS -->
+                            </h5>
+
+                            <div id="options-container" class="space-y-3 mb-6">
+                                <!-- Opsi akan diisi oleh JS -->
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button id="next-btn" onclick="nextQuestion()" class="hidden px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition" disabled>
+                                    Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result Screen -->
+                        <div id="quiz-result" class="hidden text-center py-8">
+                            <div id="result-icon" class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 bg-brand-100 text-brand-600">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h4 class="text-2xl font-bold mb-1 text-slate-900">Hasil Evaluasi Belajar</h4>
+                            <p id="result-bab-label" class="text-xs text-slate-400 font-bold tracking-widest uppercase mb-6">Bab 1: Makhluk Hidup & Lingkungan</p>
+                            <p class="text-slate-500 text-xs sm:text-sm mb-2">Nilai Akhir Anda:</p>
+                            <div class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-social-600 mb-6" id="final-score">
+                                0
+                            </div>
+                            <p id="result-message" class="text-sm text-slate-700 mb-8 max-w-md mx-auto font-medium">Luar biasa! Pemahaman Anda sangat baik.</p>
+                            <div class="flex flex-col sm:flex-row justify-center gap-3">
+                                <button onclick="resetQuiz()" class="px-6 py-3 bg-brand-50 text-brand-700 rounded-xl font-bold text-sm hover:bg-brand-100 transition flex items-center justify-center gap-2">
+                                    <i class="fas fa-redo"></i> Ulangi Kuis
+                                </button>
+                                <button onclick="switchTab('modul-tab')" class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition flex items-center justify-center gap-2">
+                                    <i class="fas fa-book"></i> Baca Kembali Modul
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- TAB 4: SIMULATOR INTERAKTIF (EKSPERIMEN) -->
+                    <div id="content-simulator-tab" class="tab-content hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-800">Lab Simulator Eksploratif IPAS</h4>
+                            </div>
+                            <span class="px-3 py-1 text-xs font-extrabold bg-emerald-50 text-emerald-600 rounded-full">SMK Kelas X</span>
+                        </div>
+
+                        <p class="text-slate-500 text-sm mb-6">
+                            Gunakan alat bantu simulasi di bawah ini untuk memodelkan skenario dunia nyata, menguji variabel, dan menganalisis reaksi/dampaknya secara instan.
+                        </p>
+
+                        <!-- Dynamic Simulator Wrapper -->
+                        <div id="simulator-card-wrapper" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                            <!-- JS will inject chapter specific simulator code here -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 pt-16 pb-8 border-t border-slate-800 text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="https://smkn1karangbaru.sch.id/storage/logos/OrHk18Ac6o0WNik7QiFDH5ifNS0jQsjkacaynCTG.png" alt="Logo SMKN 1 Karang Baru" class="w-10 h-10 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100/22c55e/ffffff?text=SMK';">
+                        <div>
+                            <span class="font-extrabold text-lg text-white">Projek IPAS SMK</span>
+                            <span class="block text-[9px] text-slate-500 font-bold tracking-widest uppercase">SMK Negeri 1 Karang Baru</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-xs sm:text-sm max-w-sm leading-relaxed">
+                        Platform media ajar digital interaktif untuk implementasi Kurikulum Merdeka Projek IPAS khusus SMK Negeri 1 Karang Baru. Dikembangkan oleh RINI DELIANA, S.T., M.Pd.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs">Peta Kurikulum SMK</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#ruang-belajar" onclick="pilihBab(1)" class="hover:text-white transition">Bab 1: Makhluk Hidup & Lingkungan</a></li>
+                        <li><a href="#ruang-belajar" onclick="pilihBab(2)" class="hover:text-white transition">Bab 2: Zat & Perubahannya</a></li>
+                        <li><a href="#ruang-belajar" onclick="pilihBab(3)" class="hover:text-white transition">Bab 3: Energi & Perubahannya</a></li>
+                        <li><a href="#ruang-belajar" onclick="pilihBab(4)" class="hover:text-white transition">Bab 4: Keruangan & Konektivitas</a></li>
+                        <li><a href="#ruang-belajar" onclick="pilihBab(5)" class="hover:text-white transition">Bab 5: Interaksi & Sosialisasi</a></li>
+                        <li><a href="#ruang-belajar" onclick="pilihBab(6)" class="hover:text-white transition">Bab 6: Perilaku Ekonomi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs">Pilar Kurikulum</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex items-center gap-2"><i class="fas fa-brain text-brand-500"></i> Memahami Konsep</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-tools text-social-500"></i> Mengaplikasi Projek</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-chart-line text-purple-500"></i> Merefleksi Evaluasi</li>
+                    </ul>
+                    <div class="flex gap-3 mt-6">
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition"><i class="fab fa-youtube text-sm"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-600 hover:text-white transition"><i class="fab fa-instagram text-sm"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 text-center text-slate-500 text-xs sm:text-sm">
+                &copy; 2026 Portal Pembelajaran Projek IPAS SMK Negeri 1 Karang Baru. Dibuat dengan pendekatan Kurikulum Merdeka Terapan oleh RINI DELIANA, S.T., M.Pd.
+            </div>
+        </div>
+    </footer>
+
+    </div> <!-- /#main-site -->
+
+    <!-- JavaScript Logic: Gerbang Login Peserta Didik -->
+    <script>
+        let kelasTerpilihLogin = null;
+
+        function pilihKelasLogin(kelas, btnEl) {
+            document.querySelectorAll('.kelas-login-btn').forEach(b => {
+                b.classList.remove('border-brand-500', 'bg-brand-50', 'ring-2', 'ring-brand-200');
+            });
+            btnEl.classList.add('border-brand-500', 'bg-brand-50', 'ring-2', 'ring-brand-200');
+            kelasTerpilihLogin = kelas;
+            validasiFormLogin();
+        }
+
+        function validasiFormLogin() {
+            const nama = document.getElementById('login-nama').value.trim();
+            const btn = document.getElementById('btn-masuk-portal');
+            const isValid = nama.length > 0 && kelasTerpilihLogin;
+            btn.disabled = !isValid;
+            btn.classList.toggle('opacity-50', !isValid);
+            btn.classList.toggle('cursor-not-allowed', !isValid);
+            return isValid;
+        }
+
+        function masukPortal() {
+            const nama = document.getElementById('login-nama').value.trim();
+            const errorMsg = document.getElementById('login-error');
+
+            if (!nama || !kelasTerpilihLogin) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            // Sembunyikan gerbang login, tampilkan portal utama
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('main-site').classList.remove('hidden');
+            document.body.classList.remove('overflow-hidden');
+            window.scrollTo(0, 0);
+
+            // Tampilkan info peserta didik di navbar (desktop & mobile)
+            const namaTampil = nama.length > 18 ? nama.substring(0, 18) + '…' : nama;
+
+            const badge = document.getElementById('siswa-info-badge');
+            document.getElementById('siswa-info-nama').innerText = namaTampil;
+            document.getElementById('siswa-info-kelas').innerText = kelasTerpilihLogin;
+            badge.classList.remove('hidden');
+            badge.classList.add('flex');
+
+            const badgeMobile = document.getElementById('siswa-info-badge-mobile');
+            document.getElementById('siswa-info-nama-mobile').innerText = namaTampil;
+            document.getElementById('siswa-info-kelas-mobile').innerText = kelasTerpilihLogin;
+            badgeMobile.classList.remove('hidden');
+        }
+
+        function keluarPortal() {
+            if (confirm('Keluar dari portal dan kembali ke halaman login?')) {
+                location.reload();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputNama = document.getElementById('login-nama');
+            if (inputNama) {
+                inputNama.addEventListener('input', validasiFormLogin);
+                inputNama.focus();
+            }
+        });
+    </script>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Data Struktur Kurikulum Projek IPAS SMK (6 Bab Lengkap) ---
+        const IPAS_CURRICULUM = {
+            1: {
+                title: "Bab 1: Makhluk Hidup dan Lingkungannya",
+                desc: "Mempelajari interaksi antar makhluk hidup, ekosistem lokal, penanganan AMDAL industri, serta mitigasi pencemaran lingkungan hidup di lingkungan SMK.",
+                tujuan: [
+                    "Mengidentifikasi ciri-ciri makhluk hidup secara mikroskopis dan makroskopis.",
+                    "Menganalisis jenis-jenis interaksi komponen biotik dan abiotik dalam ekosistem sekitar.",
+                    "Mengevaluasi dampak aktivitas industri/kejuruan terhadap kelestarian lingkungan hidup.",
+                    "Merancang langkah preventif dan mitigasi sederhana terhadap pencemaran lingkungan (AMDAL)."
+                ],
+                ringkasan: `
+                    <p class="mb-3">Ekosistem disusun atas dua komponen utama: <strong>komponen biotik</strong> (makhluk hidup, dari bakteri, jamur, tanaman, hewan, hingga manusia) dan <strong>komponen abiotik</strong> (kondisi lingkungan fisik seperti air, tanah, udara, pH, suhu, dan kelembapan).</p>
+                    <p class="mb-3">Interaksi biotik-abiotik dapat dilihat pada proses fotosintesis tumbuhan yang menyerap CO₂ dan air, atau interaksi manusia dalam pengolahan limbah. Di dunia industri (vokasional SMK), setiap usaha manufaktur atau jasa wajib merancang manajemen lingkungan agar tidak menyebabkan pencemaran air, tanah, maupun udara.</p>
+                    <p class="mb-3">Siswa diajak memetakan rantai makanan lokal dan memikirkan solusi pengelolaan limbah terpadu berdasarkan analisis Analisis Mengenai Dampak Lingkungan (AMDAL) yang sederhana.</p>
+                `,
+                glosarium: "<strong>AMDAL (Analisis Mengenai Dampak Lingkungan):</strong> Kajian mengenai dampak besar dan penting suatu usaha dan/atau kegiatan yang direncanakan pada lingkungan hidup.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Observasi Ekosistem & Potensi Dampak Industri Sekolah:</h6>
+                        <p class="mb-3">Lakukan pengamatan di sekitar lingkungan sekolah (misal: area bengkel, kantin, kebun, atau laboratorium). Catat minimal 5 komponen biotik dan 5 komponen abiotik yang saling berinteraksi.</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Analisis bagaimana pembuangan limbah (misal: sisa oli bengkel, sisa sabun cuci piring kantin) dapat mengganggu komponen biotik tanah atau air di sekitar.</li>
+                            <li>Buatlah bagan rantai makanan sederhana yang ditemukan di area tersebut.</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Projek Pembuatan Komposter Mandiri atau Filter Saringan Air Sederhana:</h6>
+                        <p class="mb-2">Secara berkelompok (3-4 siswa), buatlah salah satu rancangan projek berikut:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Komposter Organik Sekolah:</strong> Memanfaatkan sisa sampah kantin/taman untuk dijadikan pupuk cair/kompos guna meminimalkan penumpukan sampah.</li>
+                            <li><strong>Filter Air Alami:</strong> Menyusun saringan air bersih darurat menggunakan botol bekas, arang aktif, sabut kelapa, kerikil, dan pasir untuk menyaring limbah cair kantin.</li>
+                        </ol>
+                        <p class="mt-3 text-xs text-brand-700"><em>Kumpulkan laporan perencanaan (sketsa, alat, bahan, langkah kerja) ke guru pengampu.</em></p>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Pertanyaan Refleksi Individu:</h6>
+                        <p class="mb-3">Tulis tanggapan Anda di buku catatan/jurnal IPAS:</p>
+                        <blockquote class="border-l-4 border-purple-500 pl-4 py-1 italic bg-purple-50 text-xs mb-3 text-purple-950">
+                            \"Jika Anda bekerja di sebuah industri di masa depan (sesuai jurusan Anda), kontribusi nyata apa yang paling realistis Anda lakukan untuk mengurangi pencemaran lingkungan dari tempat kerja Anda?\"
+                        </blockquote>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Saat praktikum di bengkel otomotif SMK, tumpahan oli seringkali masuk ke tanah. Dari segi ekologi, peristiwa ini dapat mengganggu keseimbangan ekosistem karena...",
+                        options: [
+                            "Oli membunuh bakteri pembusuk tanah sehingga dekomposisi sampah organik terhambat.",
+                            "Tumpahan oli mempercepat tumbuhnya tanaman gulma pengganggu.",
+                            "Oli meningkatkan kadar nitrogen tanah secara drastis.",
+                            "Tanah menjadi terlalu subur sehingga kelembaban berkurang."
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Dalam ekosistem taman sekolah, tanaman bunga mendapat cahaya matahari, air, dan karbondioksida untuk fotosintesis. Interaksi ini disebut interaksi antar...",
+                        options: [
+                            "Komponen biotik dengan biotik",
+                            "Komponen biotik dengan abiotik",
+                            "Komponen abiotik dengan abiotik",
+                            "Produsen dengan konsumen primer"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Lembaga industri berkewajiban menyusun analisis kelayakan AMDAL sebelum beroperasi. Apa tujuan utama penyusunan AMDAL tersebut?",
+                        options: [
+                            "Mempercepat proses perizinan tanpa memikirkan limbah.",
+                            "Mengevaluasi keuntungan finansial dari penjualan produk buangan.",
+                            "Merencanakan tindakan pencegahan, penanggulangan, dan pemantauan dampak negatif terhadap alam.",
+                            "Mengubah standar ekosistem alam agar menyesuaikan dengan limbah pabrik."
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Di suatu area pertanian sekitar SMK Pertanian, jumlah populasi ular sawah menurun tajam karena diburu. Dampak langsung yang dirasakan petani adalah...",
+                        options: [
+                            "Populasi elang meningkat karena tidak ada saingan.",
+                            "Populasi tikus sawah melonjak drastis merusak tanaman padi.",
+                            "Hasil panen padi semakin melimpah.",
+                            "Kelembaban tanah menurun drastis."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Langkah penanganan limbah kantin SMK yang mengandung lemak dan sabun cuci piring (greywater) yang paling ramah lingkungan sebelum dibuang ke parit umum adalah...",
+                        options: [
+                            "Memasukkan langsung ke parit agar mengalir ke sungai terdekat.",
+                            "Mengendapkan limbah di bak penyaring sederhana berisi arang, kerikil, dan ijuk.",
+                            "Menimbun air sabun tersebut di dalam tanah galian yang subur.",
+                            "Mencampur air limbah sabun dengan bahan bakar solar."
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            },
+            2: {
+                title: "Bab 2: Zat dan Perubahannya",
+                desc: "Memahami sifat fisika dan kimia suatu zat, klasifikasi zat tunggal/campuran, perubahan wujud, serta berbagai pemisahan zat di bidang industri.",
+                tujuan: [
+                    "Membedakan sifat fisika dan sifat kimia suatu materi.",
+                    "Klasifikasi unsur, senyawa, dan campuran homogen/heterogen.",
+                    "Menganalisis perbedaan perubahan fisika dan perubahan kimia dalam kehidupan sehari-hari.",
+                    "Mendemonstrasikan prinsip pemisahan campuran (filtrasi, evaporasi, kristalisasi, destilasi) sesuai bidang keahlian SMK."
+                ],
+                ringkasan: `
+                    <p class="mb-3">Materi didefinisikan sebagai segala sesuatu yang menempati ruang dan memiliki massa. Materi dikelompokkan menjadi <strong>Zat Tunggal</strong> (unsur & senyawa) dan <strong>Campuran</strong> (homogen seperti larutan garam, serta heterogen seperti air kopi).</p>
+                    <p class="mb-3">Zat dapat mengalami perubahan: <strong>perubahan fisika</strong> (tidak menghasilkan zat baru, hanya bentuk fisik atau wujud berubah, misalnya es mencair, besi memuai) dan <strong>perubahan kimia</strong> (menghasilkan zat baru melalui reaksi kimia, ditandai terbentuknya gas, endapan, perubahan warna, atau suhu, misalnya besi berkarat, kayu terbakar).</p>
+                    <p class="mb-3">Di industri teknik atau kuliner, penguasaan pemisahan campuran (seperti destilasi minyak bumi, filtrasi limbah, atau evaporasi gula) sangatlah vital dalam proses operasional.</p>
+                `,
+                glosarium: "<strong>Filtrasi:</strong> Proses pemisahan zat padat dari cairan menggunakan filter (penyaring) yang memanfaatkan perbedaan ukuran partikel zat.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Eksplorasi Perubahan Zat di Lab/Bengkel/Dapur Sekolah:</h6>
+                        <p class="mb-3">Amati aktivitas di bengkel (proses pengelasan, korosi besi), laboratorium, atau dapur tata boga (proses pembakaran gas, memasak air, memotong sayur).</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Temukan minimal 3 contoh peristiwa perubahan fisika dan 3 perubahan kimia di sekitar sekolah Anda.</li>
+                            <li>Tuliskan ciri-ciri reaksi yang menyertainya (panas, perubahan warna, terbentuk gas/endapan).</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Projek Pembuatan Garam Kristal atau Sabun Kimia Sederhana:</h6>
+                        <p class="mb-2">Lakukan salah satu eksperimen berkelompok berikut dengan panduan keselamatan kerja:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Evaporasi Sederhana:</strong> Membuat kristal garam dapur murni dari pelarutan garam kasar kotor yang disaring (filtrasi) kemudian diuapkan (evaporasi).</li>
+                            <li><strong>Projek Pemisahan Minyak Esensial:</strong> Melakukan destilasi sederhana dari kulit jeruk untuk diekstrak kandungan minyak esensialnya (cocok untuk SMK Farmasi/Kimia).</li>
+                        </ol>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Pertanyaan Jurnal Refleksi:</h6>
+                        <p class="mb-3">Jelaskan mengapa logam besi yang dibiarkan di tempat lembab dapat mengalami korosi (karat). Apa perbedaan sifat besi murni dengan karat besi tersebut? Dan bagaimana cara mencegahnya di jurusan teknik Anda?</p>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Di bengkel pengelasan logam, gas asetilen (karbit) dibakar dengan oksigen untuk menyatukan dua plat besi. Proses pembakaran gas karbit ini tergolong ke dalam...",
+                        options: [
+                            "Perubahan fisika karena besi mencair kembali.",
+                            "Perubahan kimia karena terbentuk zat baru disertai pelepasan energi panas dan cahaya.",
+                            "Perubahan mekanik karena ada benturan elektroda.",
+                            "Perubahan wujud sublimasi."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Berikut ini yang merupakan contoh perubahan fisika dalam industri makanan (tata boga) adalah...",
+                        options: [
+                            "Ragi mengubah adonan tepung menjadi mengembang (pembuatan roti).",
+                            "Singkong mengalami fermentasi menjadi tape.",
+                            "Gula dilarutkan ke dalam air hangat untuk membuat sirup manis.",
+                            "Minyak goreng menjadi tengik karena oksidasi udara."
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Metode pemisahan campuran yang paling tepat digunakan untuk memisahkan bensin, solar, dan kerosin dari minyak bumi kasar adalah...",
+                        options: [
+                            "Filtrasi (penyaringan)",
+                            "Destilasi Bertingkat (penyulingan berdasarkan perbedaan titik didih)",
+                            "Kromatografi kertas",
+                            "Sublimasi"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Air teh yang disaring untuk memisahkan ampas daun teh merupakan contoh pemanfaatan pemisahan campuran dengan metode...",
+                        options: [
+                            "Filtrasi",
+                            "Kristalisasi",
+                            "Sentrifugasi",
+                            "Evaporasi"
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Ciri yang paling membedakan secara mendasar antara perubahan kimia dengan perubahan fisika adalah...",
+                        options: [
+                            "Perubahan kimia selalu ditandai dengan perubahan wujud zat cair menjadi gas.",
+                            "Perubahan fisika selalu menyerap panas yang sangat besar.",
+                            "Perubahan kimia menghasilkan zat baru dengan komposisi kimia yang berbeda.",
+                            "Perubahan fisika mengubah sifat molekul penyusunnya secara permanen."
+                        ],
+                        correctAnswer: 2
+                    }
+                ]
+            },
+            3: {
+                title: "Bab 3: Energi dan Perubahannya",
+                desc: "Memahami konsep energi kinetik, potensial, termal, perubahan energi, hukum kekekalan energi, serta efisiensi dan energi alternatif ramah lingkungan.",
+                tujuan: [
+                    "Menjelaskan konsep energi kinetik, energi potensial, dan energi mekanik.",
+                    "Mengidentifikasi konversi (perubahan) energi pada peralatan kerja mesin dan alat rumah tangga.",
+                    "Memahami Hukum Kekekalan Energi.",
+                    "Menganalisis potensi energi terbarukan lokal (solar, angin, air, biomassa) untuk efisiensi energi industri."
+                ],
+                ringkasan: `
+                    <p class="mb-3"><strong>Energi</strong> didefinisikan sebagai kemampuan untuk melakukan usaha. Energi tidak dapat diciptakan dan tidak dapat dimusnahkan, melainkan hanya dapat berubah dari satu bentuk ke bentuk yang lain (<strong>Hukum Kekekalan Energi</strong>).</p>
+                    <p class="mb-3">Bentuk-bentuk energi meliputi: Energi Kinetik (gerak), Energi Potensial (posisi/ketinggian), Energi Kimia, Energi Listrik, dan Energi Termal (panas). Pada generator pembangkit listrik, energi mekanik diubah menjadi listrik lewat induksi magnet.</p>
+                    <p class="mb-3">Di era modern, lulusan SMK didorong memahami pentingnya transisi energi fosil (batu bara/minyak bumi) ke <strong>energi baru terbarukan (EBT)</strong> seperti Panel Surya (Fotovoltaik), turbin angin, dan biogas demi masa depan rendah karbon.</p>
+                `,
+                glosarium: "<strong>Energi Baru Terbarukan (EBT):</strong> Sumber energi alam yang melimpah dan tidak akan habis digunakan, seperti sinar matahari, angin, aliran air, dan panas bumi.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Analisis Konsumsi dan Pemborosan Energi di SMK:</h6>
+                        <p class="mb-3">Lakukan audit energi sederhana di ruang kelas atau bengkel praktik Anda.</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Identifikasi alat yang mengonsumsi energi listrik terbesar (lampu, AC, mesin bubut, solder).</li>
+                            <li>Tuliskan bentuk perubahan energinya (misal: Solder: Energi Listrik &rarr; Energi Termal).</li>
+                            <li>Tuliskan 3 rekomendasi tindakan hemat energi (energy saving) yang bisa diterapkan di sekolah Anda.</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Projek Rancang Bangun Prototipe Alat Konversi Energi Alternatif:</h6>
+                        <p class="mb-2">Secara berkelompok, rancang dan buatlah salah satu miniatur alat pembangkit energi bersih berikut:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Miniatur Kincir Angin/Air:</strong> Memanfaatkan dinamo DC kecil bekas mainan yang dihubungkan ke baling-baling plastik, uji kemampuannya menghasilkan tegangan listrik kecil (LED menyala).</li>
+                            <li><strong>Solar Oven Sederhana:</strong> Membuat kotak pemanas dengan karton bekas berlapis aluminium foil untuk memusatkan panas matahari guna mencairkan cokelat atau memasak telur mentah.</li>
+                        </ol>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Jurnal Refleksi Pribadi:</h6>
+                        <p class="mb-3">Sebagai calon teknisi/tenaga kerja terampil, mengapa pemahaman mengenai efisiensi energi (mengurangi rugi daya/kalor) sangat penting dalam operasional mesin-mesin industri?</p>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Sebuah panel surya dipasang di atap gedung bengkel SMK. Panel surya tersebut bekerja dengan mengubah...",
+                        options: [
+                            "Energi cahaya matahari menjadi energi kimia yang disimpan di aki, lalu diubah ke energi listrik.",
+                            "Energi termal panas bumi langsung menjadi energi gerak mekanis.",
+                            "Energi kinetik foton cahaya matahari langsung menjadi aliran elektron (energi listrik).",
+                            "Energi kimia udara bebas menjadi energi listrik AC."
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Ketika rem kendaraan bermotor diinjak keras saat melaju kencang, kendaraan akan berhenti. Ke manakah perginya energi kinetik gerak kendaraan tersebut?",
+                        options: [
+                            "Musnah dan hilang dari alam semesta sesuai hukum relativitas.",
+                            "Berubah menjadi energi termal (panas) akibat gesekan kampas dengan cakram rem.",
+                            "Berubah menjadi energi potensial gravitasi di dalam roda.",
+                            "Diserap kembali sepenuhnya ke dalam tangki bahan bakar."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Perangkat elektronik kompresor AC di ruang kelas SMK mengubah energi listrik menjadi energi kinetik pada motor pompa gas pendingin. Menurut hukum kekekalan energi...",
+                        options: [
+                            "Total energi sebelum dan sesudah konversi besarnya selalu konstan (tetap).",
+                            "Energi listrik yang dimasukkan selalu lebih kecil dari energi gerak yang dihasilkan.",
+                            "Sebagian energi dihancurkan untuk menghasilkan efek dingin.",
+                            "AC memproduksi energi listrik baru secara mandiri."
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Berikut ini yang merupakan kelompok energi baru terbarukan (EBT) yang ramah lingkungan dan tidak menghasilkan gas emisi karbon tinggi adalah...",
+                        options: [
+                            "Batu bara, minyak bumi, dan solar.",
+                            "Gas alam cair, elpiji, dan bensin oktan tinggi.",
+                            "Energi angin, energi air, panas bumi, dan sel surya.",
+                            "Nuklir fisi berat, batubara lignit, dan kayu hutan lindung."
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: "Pembangkit Listrik Tenaga Air (PLTA) memanfaatkan aliran air bendungan yang tinggi jatuh ke bawah untuk memutar turbin generator. Aliran air tersebut mengalami transformasi energi dari...",
+                        options: [
+                            "Energi kimia &rarr; Energi listrik &rarr; Energi termal",
+                            "Energi potensial gravitasi &rarr; Energi kinetik gerak &rarr; Energi listrik",
+                            "Energi kinetik &rarr; Energi kimia &rarr; Energi potensial",
+                            "Energi mekanik &rarr; Energi nuklir &rarr; Energi listrik"
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            },
+            4: {
+                title: "Bab 4: Keruangan dan Konektivitas Antarruang dan Antarwaktu",
+                desc: "Mempelajari letak geografis dan astronomis Indonesia, pengaruhnya terhadap iklim, kebencanaan, transportasi, serta konektivitas antar wilayah di nusantara.",
+                tujuan: [
+                    "Menjelaskan posisi geografis dan astronomis Indonesia serta dampaknya.",
+                    "Menginterpretasikan informasi peta rute transportasi dan sebaran sumber daya alam.",
+                    "Menganalisis keterkaitan antarruang dalam pemenuhan kebutuhan logistik industri SMK.",
+                    "Memahami manajemen kesiapsiagaan bencana berdasarkan kondisi ruang wilayah."
+                ],
+                ringkasan: `
+                    <p class="mb-3">Indonesia terletak secara astronomis pada 6° LU - 11° LS dan 95° BT - 141° BT, beriklim tropis dengan curah hujan tinggi. Letak geografis di antara dua benua (Asia & Australia) dan dua samudera (Pasifik & Hindia) memosisikan Indonesia di jalur silang perdagangan dunia.</p>
+                    <p class="mb-3"><strong>Konektivitas antarruang</strong> mengkaji bagaimana ruang satu bergantung pada ruang lain. Daerah pedesaan menghasilkan bahan pangan mentah, sedangkan wilayah perkotaan memprosesnya menjadi barang manufaktur industrial yang siap distribusikan.</p>
+                    <p class="mb-3">Indonesia berada di pertemuan 3 lempeng aktif bumi (Eurasia, Pasifik, Indo-Australia) yang kaya akan potensi mineral tambang, namun sekaligus menjadikannya rawan gempa, tsunami, dan erupsi gunung api (Ring of Fire).</p>
+                `,
+                glosarium: "<strong>Konektivitas Antarruang:</strong> Hubungan timbal balik antarwilayah dalam aspek sosial, ekonomi, maupun mobilitas fisik guna saling memenuhi kebutuhan.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Analisis Rantai Distribusi Bahan Baku Kejuruan:</h6>
+                        <p class="mb-3">Amati bahan baku utama yang digunakan di program keahlian SMK Anda (misal: kayu untuk kria, suku cadang untuk otomotif, tepung untuk boga).</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Dari wilayah mana bahan baku tersebut berasal? Mengapa tidak diproduksi sendiri di daerah sekolah Anda?</li>
+                            <li>Gambarkan alur distribusi logistik sederhana dari tempat asal produsen hingga sampai ke bengkel/sekolah Anda.</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Pemetaan Potensi Digital & Jalur Evakuasi Bencana Sekolah:</h6>
+                        <p class="mb-2">Secara berkelompok, pilihlah salah satu tugas pemetaan keruangan berikut:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Peta Potensi Logistik:</strong> Membuat peta sebaran UMKM lokal unggulan di sekitar sekolah dengan Google Maps.</li>
+                            <li><strong>Peta Evakuasi Bencana SMK:</strong> Merancang denah jalur evakuasi darurat gedung sekolah jika terjadi bencana gempa bumi atau kebakaran, lengkap dengan titik kumpul aman.</li>
+                        </ol>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Refleksi Kesiapan Bencana:</h6>
+                        <p class="mb-3">Mengingat wilayah Indonesia yang rawan gempa bumi, apakah Anda secara individu telah memahami protokol penyelamatan diri saat gempa ketika sedang berada di lantai atas gedung sekolah?</p>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Letak astronomis Indonesia di wilayah tropis menyebabkan Indonesia memiliki dua musim dengan curah hujan tinggi. Keuntungan langsung letak ini bagi sektor pertanian terapan adalah...",
+                        options: [
+                            "Suhu udara dingin sepanjang tahun yang cocok untuk gandum salju.",
+                            "Kegiatan bercocok tanam dan produksi bahan pangan dapat berjalan sepanjang tahun tanpa terhenti musim salju ekstrem.",
+                            "Tanah sawah tidak memerlukan sistem irigasi buatan sama sekali.",
+                            "Bebas dari segala jenis hama serangga pengganggu tanaman."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Mengapa daerah pegunungan (seperti Puncak atau Lembang) menjadi pemasok sayur-mayur ke kota Jakarta, sedangkan kota Jakarta memasok produk industri ke pegunungan?",
+                        options: [
+                            "Karena ada ketergantungan antarruang akibat perbedaan potensi alam dan iklim wilayah.",
+                            "Karena orang kota tidak menyukai makanan berminyak.",
+                            "Karena biaya transportasi dari pegunungan gratis.",
+                            "Karena undang-undang membatasi kota untuk menanam pohon."
+                        ],
+                        correctAnswer: 0
+                    },
+                    {
+                        question: "Indonesia dilewati oleh garis khatulistiwa dan berada pada jalur pertemuan lempeng tektonik aktif. Dampak negatif keruangan yang harus diwaspadai adalah...",
+                        options: [
+                            "Hampir seluruh wilayah tidak memiliki laut.",
+                            "Tingginya potensi bencana gempa bumi, tsunami, dan letusan gunung api.",
+                            "Tidak adanya keanekaragaman flora dan fauna.",
+                            "Hilangnya jaringan telekomunikasi satelit secara periodik."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Sistem logistik distribusi bahan pangan antarpulau di Indonesia sangat bergantung pada infrastruktur konektivitas yang kuat, yaitu berupa pembangunan...",
+                        options: [
+                            "Stasiun pemancar televisi nasional.",
+                            "Pelabuhan laut modern (Tol Laut) dan bandar udara logistik cargo.",
+                            "Pusat perbelanjaan grosir di setiap desa terpencil.",
+                            "Gedung perkantoran pencakar langit di wilayah ibu kota baru."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Jika terjadi gempa bumi saat Anda berada di dalam ruang kelas berlantai tiga di sekolah, tindakan pertama yang paling disarankan demi keselamatan jiwa adalah...",
+                        options: [
+                            "Segera berlari berebut turun lewat tangga darurat lift secara bersamaan.",
+                            "Melompat keluar melalui jendela kelas agar cepat sampai ke lapangan bawah.",
+                            "Berlindung di bawah meja belajar yang kokoh untuk melindungi kepala dari reruntuhan langit-langit.",
+                            "Berdiri diam di dekat kaca jendela untuk melihat sumber gempa."
+                        ],
+                        correctAnswer: 2
+                    }
+                ]
+            },
+            5: {
+                title: "Bab 5: Interaksi, Komunikasi, Sosialisasi, Institusi Sosial, dan Dinamika Sosial",
+                desc: "Memahami interaksi sosial asosiatif-disosiatif, media komunikasi, sosialisasi norma-norma, fungsi lembaga sosial masyarakat, serta dinamika perubahan sosial di era digital.",
+                tujuan: [
+                    "Mengklasifikasikan jenis-jenis interaksi sosial di sekolah dan industri.",
+                    "Memahami proses sosialisasi dalam pembentukan kepribadian dan kepatuhan norma.",
+                    "Mengidentifikasi peran dan fungsi 5 lembaga/institusi sosial utama di masyarakat.",
+                    "Menganalisis dampak perubahan sosial budaya akibat digitalisasi teknologi informasi bagi generasi muda."
+                ],
+                ringkasan: `
+                    <p class="mb-3">Manusia adalah makhluk sosial yang selalu membutuhkan orang lain. <strong>Interaksi Sosial</strong> adalah hubungan timbal balik antara individu dengan individu, individu dengan kelompok, atau kelompok dengan kelompok.</p>
+                    <p class="mb-3">Interaksi dibedakan menjadi: <strong>Asosiatif</strong> (mengarah pada persatuan, kerja sama, asimilasi) dan <strong>Disosiatif</strong> (mengarah pada perpecahan, konflik, persaingan). Melalui proses <strong>Sosialisasi</strong>, individu menginternalisasi nilai dan norma sosial di lingkungannya.</p>
+                    <p class="mb-3"><strong>Institusi/Lembaga Sosial</strong> (keluarga, agama, ekonomi, pendidikan, politik) berfungsi mengatur tatanan kehidupan bersama. Dinamika sosial saat ini dipengaruhi oleh revolusi digital, yang merubah cara berkomunikasi dan interaksi secara radikal.</p>
+                `,
+                glosarium: "<strong>Sosialisasi:</strong> Proses belajar seumur hidup di mana seorang individu mempelajari nilai, norma, peran, dan perilaku sosial masyarakat agar dapat diterima di kelompoknya.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Identifikasi Dinamika Sosial & Perilaku Komunikasi Digital:</h6>
+                        <p class="mb-3">Amati cara berkomunikasi dan interaksi rekan-rekan sekelas Anda saat istirahat sekolah.</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Berapa banyak siswa yang berinteraksi langsung secara tatap muka (lisan) dibanding siswa yang asyik berinteraksi di dunia maya lewat smartphone?</li>
+                            <li>Identifikasi contoh konflik (interaksi disosiatif) akibat miskomunikasi di media sosial yang pernah terjadi di lingkungan sekolah Anda. Tuliskan solusinya.</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Projek Kampanye Edukasi Etika Digital & Anti-Bullying:</h6>
+                        <p class="mb-2">Secara berkelompok, buatlah rancangan aksi nyata sosial berikut:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Desain Poster/Infografis Kampanye:</strong> Mendesain poster digital bertema \"Stop Bullying & Cerdas Berkomunikasi di Medsos\" untuk dipasang di majalah dinding sekolah atau dibagikan di Instagram OSIS.</li>
+                            <li><strong>Penyusunan Pakta Integritas Kelas:</strong> Merumuskan aturan bersama etika berkomunikasi di grup WhatsApp kelas agar tidak menyinggung SARA dan menjaga kerukunan belajar.</li>
+                        </ol>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Refleksi Karakter Sosial:</h6>
+                        <p class="mb-3">Apakah kehadiran media sosial saat ini membuat hubungan sosial Anda dengan keluarga di rumah menjadi lebih dekat atau justru semakin menjauh (fenomena \"mendekatkan yang jauh, menjauhkan yang dekat\")?</p>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Seorang siswa SMK kelas X aktif membantu temannya yang sedang kesulitan merakit instalasi listrik di bengkel sekolah tanpa pamrih. Bentuk interaksi sosial ini disebut...",
+                        options: [
+                            "Asimilasi budaya",
+                            "Kooperasi / Kerja Sama (Asosiatif)",
+                            "Kompetisi tidak sehat",
+                            "Kontravensi terselubung"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Lembaga pendidikan formal seperti SMK memiliki fungsi manifes (nyata) yang sangat penting bagi siswa dalam mempersiapkan masa depan mereka, yaitu...",
+                        options: [
+                            "Membatasi sosialisasi anak dengan teman sebaya agar fokus belajar.",
+                            "Mengajarkan keterampilan kejuruan serta melatih kedisiplinan kerja untuk bekal dunia industri.",
+                            "Mengambil alih seluruh fungsi pengasuhan utama anak dari tangan orang tua kandung.",
+                            "Menyediakan fasilitas rekreasi hiburan gratis bagi masyarakat umum."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Penyebaran hoaks dan ujaran kebencian di media sosial sering memicu ketegangan antar-kelompok siswa di sekolah. Tindakan preventif sosialisasi norma yang paling tepat adalah...",
+                        options: [
+                            "Mematikan seluruh jaringan listrik dan internet di wilayah sekolah.",
+                            "Memberikan literasi digital tentang etika komunikasi internet (netiket) dan UU ITE.",
+                            "Mengeluarkan seluruh siswa yang memiliki akun media sosial.",
+                            "Membiarkan perselisihan mereda dengan sendirinya tanpa campur tangan guru."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Institusi sosial manakah yang merupakan unit paling dasar dan utama dalam sosialisasi nilai moral serta penanaman karakter pertama kali pada seorang anak?",
+                        options: [
+                            "Institusi Politik",
+                            "Lembaga Keluarga",
+                            "Lembaga Ekonomi / Pasar",
+                            "Lembaga Hukum Nasional"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Perubahan pola komunikasi dari surat-menyurat fisik menjadi pesan instan digital (WhatsApp) merupakan fenomena dinamika sosial yang digerakkan oleh faktor...",
+                        options: [
+                            "Perubahan kondisi alam geografis wilayah.",
+                            "Kemajuan teknologi informasi komunikasi.",
+                            "Tuntutan regulasi kebijakan politik negara tetangga.",
+                            "Konflik bersenjata perebutan wilayah regional."
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            },
+            6: {
+                title: "Bab 6: Perilaku Ekonomi dan Kesejahteraan",
+                desc: "Mempelajari tindakan ekonomi rasional, hukum penawaran-permintaan, penyelesaian kelangkaan, fungsi pasar keuangan, serta perencanaan bisnis kreatif SMK.",
+                tujuan: [
+                    "Membedakan tindakan ekonomi berdasarkan motif dan prinsip ekonomi rasional.",
+                    "Menganalisis faktor-faktor penyebab terjadinya kelangkaan barang atau jasa di pasar.",
+                    "Menjelaskan hukum permintaan dan penawaran serta mekanisme terbentuknya harga pasar.",
+                    "Merancang perencanaan keuangan (financial planning) pribadi dan ide bisnis mandiri kreatif terapan SMK."
+                ],
+                ringkasan: `
+                    <p class="mb-3">Ekonomi berasal dari kata <em>Oikos</em> dan <em>Nomos</em> (aturan rumah tangga). Masalah utama ekonomi adalah <strong>kelangkaan (scarcity)</strong>, di mana kebutuhan manusia tidak terbatas sementara alat pemuas kebutuhan (sumber daya) terbatas.</p>
+                    <p class="mb-3">Dalam mengambil tindakan, manusia didorong oleh <strong>motif ekonomi</strong> dan harus berpedoman pada <strong>prinsip ekonomi</strong> (dengan pengorbanan tertentu untuk mendapatkan hasil maksimal).</p>
+                    <p class="mb-3"><strong>Hukum Permintaan</strong> berbunyi: Jika harga naik, jumlah barang yang diminta turun. Sebaliknya, <strong>Hukum Penawaran</strong> berbunyi: Jika harga naik, jumlah barang yang ditawarkan naik. Pertemuan keduanya membentuk harga keseimbangan pasar.</p>
+                `,
+                glosarium: "<strong>Kelangkaan (Scarcity):</strong> Kesenjangan antara sumber daya ekonomi yang terbatas dengan kebutuhan manusia yang tidak terbatas.",
+                aktivitas: {
+                    eksplorasi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Observasi Harga dan Perilaku Belanja Konsumen Kantin SMK:</h6>
+                        <p class="mb-3">Kunjungi kantin sekolah Anda saat istirahat dan amati komoditas barang yang dijual.</p>
+                        <ul class="list-disc list-inside space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li>Identifikasi barang dagangan apa yang paling cepat habis terjual (permintaan tinggi). Mengapa harganya relatif stabil atau justru naik?</li>
+                            <li>Tanyakan kepada pedagang kantin, apa yang mereka lakukan saat bahan baku utama pembuatan makanan (misal: cabai atau minyak goreng) mengalami kelangkaan harga mahal.</li>
+                        </ul>
+                    `,
+                    projek: `
+                        <h6 class="font-bold text-slate-800 mb-2">Rencana Bisnis Kreatif (Lean Business Plan) Terapan SMK:</h6>
+                        <p class="mb-2">Secara berkelompok, buatlah draf rencana bisnis sederhana (1 halaman folio) yang mengombinasikan keahlian jurusan Anda:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <li><strong>Nama Bisnis & Produk/Jasa:</strong> Apa solusi yang ditawarkan?</li>
+                            <li><strong>Target Konsumen:</strong> Siapa pembelinya? (Teman sekolah, guru, warga luar).</li>
+                            <li><strong>Rencana Biaya Produksi & Harga Jual:</strong> Berapa pengeluaran modal awal dan berapa harga jual per unit untuk mendapat keuntungan?</li>
+                        </ol>
+                    `,
+                    refleksi: `
+                        <h6 class="font-bold text-slate-800 mb-2">Refleksi Literasi Keuangan Siswa:</h6>
+                        <p class="mb-3">Bagaimana Anda mengatur uang saku mingguan Anda saat ini? Apakah Anda lebih mementingkan faktor pemenuhan Kebutuhan (primer) atau Keinginan (sekunder/tersier)?</p>
+                    `
+                },
+                kuis: [
+                    {
+                        question: "Masalah pokok ekonomi yang dihadapi manusia di dunia adalah terjadinya kelangkaan (scarcity). Penyebab utama kelangkaan tersebut adalah...",
+                        options: [
+                            "Kebutuhan manusia yang terbatas berhadapan dengan sumber daya alam yang melimpah.",
+                            "Kebutuhan manusia tidak terbatas sedangkan alat pemuas kebutuhan berupa sumber daya jumlahnya terbatas.",
+                            "Keengganan masyarakat untuk membelanjakan uang tabungannya.",
+                            "Intervensi pemerintah yang menetapkan subsidi terlalu rendah."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Sesuai hukum permintaan, apabila harga bahan baku tepung terigu untuk industri kue di jurusan Tata Boga melonjak naik, maka kuantitas permintaan tepung terigu tersebut cenderung akan...",
+                        options: [
+                            "Meningkat drastis",
+                            "Mengalami penurunan",
+                            "Stabil tidak berubah sama sekali",
+                            "Naik dua kali lipat mengikuti tren inflasi"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Seorang siswa SMK membeli laptop bekas berkualitas tinggi demi kelancaran tugas belajar pemrograman/desain grafisnya. Pembelian ini didasarkan atas pertimbangan tindakan ekonomi...",
+                        options: [
+                            "Irasional karena membeli barang bekas murah.",
+                            "Rasional berdasarkan skala prioritas pemenuhan kebutuhan penunjang belajar kejuruan.",
+                            "Tindakan konsumtif demi gengsi pertemanan di sekolah.",
+                            "Tindakan spekulasi perjudian keuangan."
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Pertemuan antara kesepakatan harga yang ditawarkan oleh penjual dengan harga yang diminta oleh pembeli di pasar akan menghasilkan...",
+                        options: [
+                            "Harga monopoli kartel",
+                            "Harga keseimbangan pasar (Equilibrium)",
+                            "Kerugian sepihak bagi produsen",
+                            "Kelangkaan barang permanen"
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: "Sebagai siswa SMK, manakah langkah awal literasi keuangan pribadi yang paling tepat untuk mengantisipasi masa depan setelah lulus?",
+                        options: [
+                            "Menghabiskan seluruh uang saku harian untuk membeli tiket konser musik.",
+                            "Membuat skala prioritas anggaran bulanan, menyisihkan uang tabungan darurat, dan berinvestasi dalam pelatihan keterampilan.",
+                            "Meminjam uang di aplikasi pinjaman online ilegal untuk modal gaya hidup foya-foya.",
+                            "Menyerahkan seluruh pengelolaan keuangan pribadi kepada teman sebaya."
+                        ],
+                        correctAnswer: 1
+                    }
+                ]
+            }
+        };
+
+        // --- 2. State & UI Variables ---
+        let currentActiveBab = 1;
+        let activeTabId = 'modul-tab';
+        
+        let quizCurrentQuestionIndex = 0;
+        let quizScore = 0;
+        let quizHasAnswered = false;
+
+        // --- 3. DOM Elements Cache ---
+        const activeBabTitle = document.getElementById('active-bab-num-title');
+        const activeBabDesc = document.getElementById('active-bab-desc');
+        const modulTujuan = document.getElementById('modul-tujuan');
+        const modulMateriRingkasan = document.getElementById('modul-materi-ringkasan');
+        const modulGlosarium = document.getElementById('modul-glosarium');
+        
+        const accEksplorasi = document.getElementById('acc-eksplorasi');
+        const accProjek = document.getElementById('acc-projek');
+        const accRefleksi = document.getElementById('acc-refleksi');
+
+        // --- 4. Mobile Menu Controller ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Navbar Scroll Shadow
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+            } else {
+                navbar.classList.remove('shadow-md');
+            }
+        });
+
+        // --- 5. Core Navigation / Dynamic Bab Loader ---
+        function pilihBab(num) {
+            currentActiveBab = parseInt(num);
+            loadBabData();
+            // Reset Quiz State
+            resetQuizState();
+            // Load specific chapter simulator
+            loadSimulator();
+            // Switch back to Modul Tab for better learning flow
+            switchTab('modul-tab');
+            
+            // Scroll to study area
+            document.getElementById('ruang-belajar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function pilihBabSebelumnya() {
+            let prev = currentActiveBab - 1;
+            if (prev < 1) prev = 6;
+            pilihBab(prev);
+        }
+
+        function pilihBabBerikutnya() {
+            let next = currentActiveBab + 1;
+            if (next > 6) next = 1;
+            pilihBab(next);
+        }
+
+        // Load data dynamically into the elements
+        function loadBabData() {
+            const data = IPAS_CURRICULUM[currentActiveBab];
+            
+            // Title Header
+            activeBabTitle.innerText = data.title;
+            activeBabDesc.innerText = data.desc;
+
+            // Modul Tab
+            modulTujuan.innerHTML = '';
+            data.tujuan.forEach(t => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="font-bold text-brand-600 mr-1">&#10004;</span> ${t}`;
+                modulTujuan.appendChild(li);
+            });
+            modulMateriRingkasan.innerHTML = data.ringkasan;
+            modulGlosarium.innerHTML = data.glosarium;
+
+            // Aktivitas Tab
+            accEksplorasi.innerHTML = data.aktivitas.eksplorasi;
+            accProjek.innerHTML = data.aktivitas.projek;
+            accRefleksi.innerHTML = data.aktivitas.refleksi;
+
+            // Reset Accordion states (close all except exploration as default)
+            accEksplorasi.classList.remove('hidden');
+            document.getElementById('icon-acc-eksplorasi').style.transform = 'rotate(180deg)';
+            
+            accProjek.classList.add('hidden');
+            document.getElementById('icon-acc-projek').style.transform = 'rotate(0deg)';
+            
+            accRefleksi.classList.add('hidden');
+            document.getElementById('icon-acc-refleksi').style.transform = 'rotate(0deg)';
+
+            // Quiz Start Screen labels
+            document.getElementById('quiz-start-title').innerText = `Evaluasi Kuis ${data.title.split(':')[0]}`;
+        }
+
+        // --- 6. Tab Switcher Logic ---
+        function switchTab(tabId) {
+            activeTabId = tabId;
+            const tabs = ['modul-tab', 'aktivitas-tab', 'asesmen-tab', 'simulator-tab'];
+            
+            tabs.forEach(t => {
+                const contentEl = document.getElementById(`content-${t}`);
+                const btnEl = document.getElementById(`btn-${t}`);
+                const iconEl = btnEl.querySelector('div');
+
+                if (t === tabId) {
+                    contentEl.classList.remove('hidden');
+                    contentEl.classList.add('block');
+                    
+                    // Style Active Button
+                    if (t === 'simulator-tab') {
+                        btnEl.className = "w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border-2 border-emerald-500 bg-emerald-50/50 text-slate-900";
+                        iconEl.className = "w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-lg shadow-md shrink-0";
+                    } else {
+                        btnEl.className = "w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border-2 border-brand-500 bg-brand-50/50 text-slate-900";
+                        iconEl.className = "w-10 h-10 rounded-lg bg-brand-500 text-white flex items-center justify-center text-lg shadow-md shrink-0";
+                    }
+                } else {
+                    contentEl.classList.add('hidden');
+                    contentEl.classList.remove('block');
+                    
+                    // Style Inactive Button
+                    btnEl.className = "w-full text-left p-4 rounded-xl flex items-center gap-4 transition-all duration-200 border border-slate-200 hover:border-slate-300 bg-white text-slate-600";
+                    iconEl.className = "w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-lg shrink-0";
+                }
+            });
+        }
+
+        function focusAsesmen() {
+            switchTab('asesmen-tab');
+            document.getElementById('ruang-belajar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function focusSimulator() {
+            switchTab('simulator-tab');
+            document.getElementById('ruang-belajar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 7. Accordion Control ---
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                el.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // --- 8. Dynamic Quiz Engine (Sistem Kuis Interaktif) ---
+        const startScreen = document.getElementById('quiz-start');
+        const questionScreen = document.getElementById('quiz-question-container');
+        const resultScreen = document.getElementById('quiz-result');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const counterText = document.getElementById('question-counter');
+        const progressBar = document.getElementById('quiz-progress');
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            questionScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            quizCurrentQuestionIndex = 0;
+            quizScore = 0;
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            quizHasAnswered = false;
+            nextBtn.classList.add('hidden');
+            nextBtn.disabled = true;
+
+            const questions = IPAS_CURRICULUM[currentActiveBab].kuis;
+            const currentQ = questions[quizCurrentQuestionIndex];
+
+            // Progress & Counter
+            counterText.innerText = `Soal ${quizCurrentQuestionIndex + 1} dari ${questions.length}`;
+            progressBar.style.width = `${((quizCurrentQuestionIndex + 1) / questions.length) * 100}%`;
+            
+            // Question Text
+            questionText.innerText = currentQ.question;
+
+            // Render Options
+            optionsContainer.innerHTML = '';
+            currentQ.options.forEach((opt, index) => {
+                const optBtn = document.createElement('div');
+                optBtn.className = 'option-btn border border-slate-200 rounded-xl p-4 cursor-pointer hover:border-brand-500 hover:bg-slate-50 transition-all text-xs sm:text-sm font-medium text-slate-700 flex items-center gap-3';
+                optBtn.innerHTML = `
+                    <div class="w-7 h-7 rounded-full border border-slate-300 flex items-center justify-center font-bold text-slate-500 option-letter shrink-0">
+                        ${String.fromCharCode(65 + index)}
+                    </div>
+                    <span>${opt}</span>
+                `;
+                optBtn.onclick = () => selectQuizOption(index, optBtn);
+                optionsContainer.appendChild(optBtn);
+            });
+        }
+
+        function selectQuizOption(selectedIndex, btnElement) {
+            if (quizHasAnswered) return;
+            quizHasAnswered = true;
+
+            const questions = IPAS_CURRICULUM[currentActiveBab].kuis;
+            const correctIndex = questions[quizCurrentQuestionIndex].correctAnswer;
+            const allOptions = optionsContainer.children;
+
+            // Feedback Visual
+            if (selectedIndex === correctIndex) {
+                btnElement.classList.remove('hover:border-brand-500', 'hover:bg-slate-50');
+                btnElement.classList.add('correct');
+                quizScore += 100 / questions.length;
+            } else {
+                btnElement.classList.remove('hover:border-brand-500', 'hover:bg-slate-50');
+                btnElement.classList.add('wrong');
+                // Highlight Correct Option in Green
+                allOptions[correctIndex].classList.add('correct');
+            }
+
+            // Unhide Next button
+            nextBtn.classList.remove('hidden');
+            nextBtn.disabled = false;
+
+            if (quizCurrentQuestionIndex === questions.length - 1) {
+                nextBtn.innerHTML = 'Lihat Hasil Evaluasi <i class="fas fa-check-circle ml-1"></i>';
+                nextBtn.classList.remove('bg-slate-900', 'hover:bg-slate-800');
+                nextBtn.classList.add('bg-brand-600', 'hover:bg-brand-700');
+            } else {
+                nextBtn.innerHTML = 'Soal Berikutnya <i class="fas fa-arrow-right ml-1"></i>';
+                nextBtn.classList.remove('bg-brand-600', 'hover:bg-brand-700');
+                nextBtn.classList.add('bg-slate-900', 'hover:bg-slate-800');
+            }
+        }
+
+        function nextQuestion() {
+            const questions = IPAS_CURRICULUM[currentActiveBab].kuis;
+            if (quizCurrentQuestionIndex < questions.length - 1) {
+                quizCurrentQuestionIndex++;
+                loadQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            questionScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const scoreText = document.getElementById('final-score');
+            const messageText = document.getElementById('result-message');
+            const iconContainer = document.getElementById('result-icon');
+            const labelText = document.getElementById('result-bab-label');
+
+            const finalVal = Math.round(quizScore);
+            scoreText.innerText = finalVal;
+            labelText.innerText = IPAS_CURRICULUM[currentActiveBab].title;
+
+            // Custom Message & Icons based on Score
+            if (finalVal === 100) {
+                messageText.innerText = "Sempurna! Anda berhasil menjawab semua soal dengan tepat. Tingkatkan terus kompetensi vokasi Anda!";
+                iconContainer.innerHTML = '<i class="fas fa-trophy text-yellow-500"></i>';
+                iconContainer.className = "w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 bg-yellow-100";
+            } else if (finalVal >= 60) {
+                messageText.innerText = "Hasil yang bagus! Anda sudah memahami konsep dasar bab ini. Kembangkan pemahaman lewat aktivitas projek.";
+                iconContainer.innerHTML = '<i class="fas fa-thumbs-up text-brand-600"></i>';
+                iconContainer.className = "w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 bg-brand-100";
+            } else {
+                messageText.innerText = "Yuk belajar lagi! Bacalah materi pada Modul Ajar, diskusikan dengan teman, lalu coba kuis ini kembali.";
+                iconContainer.innerHTML = '<i class="fas fa-book-reader text-social-600"></i>';
+                iconContainer.className = "w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 bg-social-100";
+            }
+        }
+
+        function resetQuizState() {
+            startScreen.classList.remove('hidden');
+            questionScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizCurrentQuestionIndex = 0;
+            quizScore = 0;
+            quizHasAnswered = false;
+        }
+
+        function resetQuiz() {
+            resetQuizState();
+            startQuiz();
+        }
+
+        // --- 10. Lab Simulator Generator Engine ---
+        function loadSimulator() {
+            const container = document.getElementById('simulator-card-wrapper');
+            container.innerHTML = ''; // Clear container
+
+            switch (currentActiveBab) {
+                case 1:
+                    renderBab1Simulator(container);
+                    break;
+                case 2:
+                    renderBab2Simulator(container);
+                    break;
+                case 3:
+                    renderBab3Simulator(container);
+                    break;
+                case 4:
+                    renderBab4Simulator(container);
+                    break;
+                case 5:
+                    renderBab5Simulator(container);
+                    break;
+                case 6:
+                    renderBab6Simulator(container);
+                    break;
+                default:
+                    container.innerHTML = `<p class="text-slate-500 text-center py-6">Simulator tidak ditemukan.</p>`;
+            }
+        }
+
+        // --- SIMULATOR BAB 1: EKOSISTEM & LIMBAH ---
+        function renderBab1Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                        <h5 class="font-bold text-emerald-950 text-sm mb-1"><i class="fas fa-seedling mr-2"></i>Simulasi Keseimbangan Ekosistem & Dampak Industri</h5>
+                        <p class="text-xs text-emerald-800 leading-relaxed">Atur volume tumpahan limbah bengkel dan populasi predator ular untuk melihat efek domino pada ekosistem lokal area persawahan sekitar sekolah.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tumpahan Limbah Cair Bengkel: <span id="val-limbah" class="text-red-600">0%</span></label>
+                                <input type="range" id="input-limbah" min="0" max="100" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Populasi Ular (Predator): <span id="val-ular" class="text-emerald-600">50%</span></label>
+                                <input type="range" id="input-ular" min="0" max="100" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                            </div>
+                        </div>
+
+                        <!-- Real-time Status -->
+                        <div class="bg-slate-900 text-slate-100 p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status Ekosistem</span>
+                                <h6 id="status-eko-judul" class="text-lg font-bold text-emerald-400 mt-1">Ekosistem Stabil & Lestari</h6>
+                                <p id="status-eko-desc" class="text-xs text-slate-300 mt-2 leading-relaxed">Simbiosis seimbang. Rantai makanan berjalan dengan normal tanpa gangguan serius.</p>
+                            </div>
+                            <div class="flex gap-4 mt-4 border-t border-slate-800 pt-3">
+                                <div class="text-center flex-1">
+                                    <span class="block text-[10px] text-slate-400">Padi (Produsen)</span>
+                                    <span id="stat-padi" class="text-base font-bold text-white">Melimpah</span>
+                                </div>
+                                <div class="text-center flex-1 border-l border-slate-800">
+                                    <span class="block text-[10px] text-slate-400">Tikus (Hama)</span>
+                                    <span id="stat-tikus" class="text-base font-bold text-white">Terkontrol</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Board -->
+                    <div>
+                        <h6 class="text-xs font-bold text-slate-500 uppercase mb-3">Representasi Lapangan (Padi 🌾, Tikus 🐀, Ular 🐍, Limbah 💀):</h6>
+                        <div id="eko-visual-grid" class="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 min-h-[100px] flex flex-wrap gap-2 items-center justify-center text-2xl transition-all duration-300">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const inputLimbah = document.getElementById('input-limbah');
+            const inputUlar = document.getElementById('input-ular');
+            const valLimbah = document.getElementById('val-limbah');
+            const valUlar = document.getElementById('val-ular');
+            
+            const statusJudul = document.getElementById('status-eko-judul');
+            const statusDesc = document.getElementById('status-eko-desc');
+            const statPadi = document.getElementById('stat-padi');
+            const statTikus = document.getElementById('stat-tikus');
+            const visualGrid = document.getElementById('eko-visual-grid');
+
+            function updateEcosystem() {
+                const limbah = parseInt(inputLimbah.value);
+                const ular = parseInt(inputUlar.value);
+
+                valLimbah.innerText = `${limbah}%`;
+                valUlar.innerText = `${ular}%`;
+
+                let padiCount = Math.max(0, 15 - Math.floor(limbah * 0.12));
+                let tikusCount = 4;
+                let ularCount = Math.floor(ular * 0.1);
+
+                if (ular < 20) {
+                    // Tikus meledak karena ular sedikit
+                    tikusCount = Math.min(12, 10 + Math.floor((100 - ular) * 0.08));
+                    padiCount = Math.max(1, padiCount - Math.floor(tikusCount * 0.8));
+                } else if (ular > 80) {
+                    // Tikus punah, ular kelaparan
+                    tikusCount = 1;
+                } else {
+                    tikusCount = Math.max(2, 6 - Math.floor(ular * 0.05));
+                }
+
+                // Efek racun limbah terhadap padi
+                if (limbah > 50) {
+                    tikusCount = Math.max(0, tikusCount - Math.floor((limbah - 50) * 0.05));
+                    ularCount = Math.max(0, ularCount - Math.floor((limbah - 50) * 0.05));
+                }
+
+                // Tentukan teks status
+                if (limbah > 70) {
+                    statusJudul.innerText = "Ekosistem Mati / Toksik!";
+                    statusJudul.className = "text-lg font-bold text-red-500 mt-1";
+                    statusDesc.innerText = "Tingkat pencemaran oli/limbah kimia terlalu tinggi. Sebagian besar tanaman padi layu dan fauna mati keracunan.";
+                    statPadi.innerText = "Layu Total";
+                    statPadi.className = "text-base font-bold text-red-400";
+                    statTikus.innerText = "Mati";
+                    statTikus.className = "text-base font-bold text-red-400";
+                } else if (ular < 20) {
+                    statusJudul.innerText = "Ledakan Hama Tikus!";
+                    statusJudul.className = "text-lg font-bold text-amber-500 mt-1";
+                    statusDesc.innerText = "Kurangnya predator ular menyebabkan tikus sawah berkembang biak tanpa kendali dan memakan habis persediaan padi.";
+                    statPadi.innerText = "Gagal Panen";
+                    statPadi.className = "text-base font-bold text-amber-400";
+                    statTikus.innerText = "Sangat Banyak";
+                    statTikus.className = "text-base font-bold text-red-400";
+                } else {
+                    statusJudul.innerText = "Ekosistem Stabil & Lestari";
+                    statusJudul.className = "text-lg font-bold text-emerald-400 mt-1";
+                    statusDesc.innerText = "Interaksi rantai makanan berjalan dengan seimbang. Limbah minim dan predator cukup mengendalikan hama tikus.";
+                    statPadi.innerText = "Subur";
+                    statPadi.className = "text-base font-bold text-emerald-400";
+                    statTikus.innerText = "Terkontrol";
+                    statTikus.className = "text-base font-bold text-emerald-400";
+                }
+
+                // Render Visual Board
+                visualGrid.innerHTML = '';
+                for (let i = 0; i < padiCount; i++) visualGrid.innerHTML += '🌾';
+                for (let i = 0; i < tikusCount; i++) visualGrid.innerHTML += '🐀';
+                for (let i = 0; i < ularCount; i++) visualGrid.innerHTML += '🐍';
+                if (limbah > 10) {
+                    const skullCount = Math.floor(limbah / 20);
+                    for (let i = 0; i < skullCount; i++) visualGrid.innerHTML += '💀';
+                }
+                if (visualGrid.innerHTML === '') {
+                    visualGrid.innerHTML = '<span class="text-sm text-slate-400 italic">Ekosistem kosong tanpa tanda kehidupan</span>';
+                }
+            }
+
+            inputLimbah.addEventListener('input', updateEcosystem);
+            inputUlar.addEventListener('input', updateEcosystem);
+            updateEcosystem();
+        }
+
+        // --- SIMULATOR BAB 2: PEMISAHAN ZAT ---
+        function renderBab2Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
+                        <h5 class="font-bold text-teal-950 text-sm mb-1"><i class="fas fa-vial mr-2"></i>Simulator Pemisahan Campuran Kimia</h5>
+                        <p class="text-xs text-teal-800 leading-relaxed">Pilih jenis campuran limbah/bahan industri dan pasangkan dengan metode pemisahan zat yang tepat untuk mendapatkan zat murni.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Dropdowns -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">1. Jenis Campuran:</label>
+                                <select id="select-campuran" class="w-full p-3 rounded-lg border border-slate-300 text-sm bg-white focus:border-teal-500 focus:outline-none">
+                                    <option value="pasir-air">Air Kotor + Pasir Sungai (Konstruksi)</option>
+                                    <option value="garam-air">Air Asin Laut (Pembuatan Garam)</option>
+                                    <option value="minyak-bumi">Minyak Bumi Mentah (Bensin & Solar)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">2. Metode Pemisahan:</label>
+                                <select id="select-metode" class="w-full p-3 rounded-lg border border-slate-300 text-sm bg-white focus:border-teal-500 focus:outline-none">
+                                    <option value="filtrasi">Filtrasi (Penyaringan Fisik)</option>
+                                    <option value="evaporasi">Evaporasi (Penguapan Panas)</option>
+                                    <option value="destilasi">Destilasi Bertingkat (Titik Didih)</option>
+                                </select>
+                            </div>
+                            <button id="btn-jalankan-zat" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl transition shadow flex items-center justify-center gap-2">
+                                <i class="fas fa-play"></i> Jalankan Pemisahan
+                            </button>
+                        </div>
+
+                        <!-- Screen Animation -->
+                        <div class="bg-slate-900 rounded-xl p-6 text-slate-100 flex flex-col justify-between min-h-[220px]">
+                            <div class="text-center py-4" id="zat-anim-screen">
+                                <span class="text-4xl" id="zat-emoji">🧪</span>
+                                <p class="text-sm mt-3 text-slate-300" id="zat-status-text">Pilih campuran dan metode, lalu klik jalankan.</p>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden hidden" id="zat-progress-container">
+                                <div class="bg-teal-500 h-full w-0 transition-all duration-1000" id="zat-progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const selectCampuran = document.getElementById('select-campuran');
+            const selectMetode = document.getElementById('select-metode');
+            const btnJalankan = document.getElementById('btn-jalankan-zat');
+            const animScreen = document.getElementById('zat-anim-screen');
+            const zatEmoji = document.getElementById('zat-emoji');
+            const statusText = document.getElementById('zat-status-text');
+            const progressContainer = document.getElementById('zat-progress-container');
+            const progressBar = document.getElementById('zat-progress-bar');
+
+            btnJalankan.onclick = function() {
+                const campuran = selectCampuran.value;
+                const metode = selectMetode.value;
+
+                // Lock button & show progress
+                btnJalankan.disabled = true;
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '0%';
+                statusText.innerText = "Memproses pemisahan campuran...";
+                zatEmoji.innerText = "⏳";
+                
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                }, 50);
+
+                setTimeout(() => {
+                    btnJalankan.disabled = false;
+                    progressContainer.classList.add('hidden');
+
+                    let sukses = false;
+                    let emojiResult = "🧪";
+                    let resultDesc = "";
+
+                    if (campuran === 'pasir-air') {
+                        if (metode === 'filtrasi') {
+                            sukses = true;
+                            emojiResult = "🥛";
+                            resultDesc = "<strong>Sukses!</strong> Pasir tersaring sempurna di kertas saring. Anda mendapatkan air jernih dan pasir kering.";
+                        } else {
+                            emojiResult = "❌";
+                            resultDesc = "<strong>Gagal!</strong> Pasir dan air tidak bisa dipisahkan secara efisien menggunakan evaporasi/destilasi karena butiran pasir tidak larut dan merusak wadah.";
+                        }
+                    } else if (campuran === 'garam-air') {
+                        if (metode === 'evaporasi') {
+                            sukses = true;
+                            emojiResult = "🧂";
+                            resultDesc = "<strong>Sukses!</strong> Air laut dipanaskan hingga menguap seluruhnya, menyisakan kristal garam murni di dasar wadah.";
+                        } else {
+                            emojiResult = "❌";
+                            resultDesc = "<strong>Gagal!</strong> Filtrasi tidak bisa memisahkan garam dari air karena ukuran partikel garam yang terlarut jauh lebih kecil dari pori-pori saringan.";
+                        }
+                    } else if (campuran === 'minyak-bumi') {
+                        if (metode === 'destilasi') {
+                            sukses = true;
+                            emojiResult = "⛽";
+                            resultDesc = "<strong>Sukses!</strong> Minyak bumi kasar berhasil dipisahkan menjadi aspal, kerosin, solar, dan bensin berdasarkan perbedaan titik didihnya.";
+                        } else {
+                            emojiResult = "❌";
+                            resultDesc = "<strong>Gagal!</strong> Filtrasi atau evaporasi sederhana tidak akan berhasil memisahkan komponen senyawa hidrokarbon kompleks pada minyak bumi.";
+                        }
+                    }
+
+                    zatEmoji.innerText = emojiResult;
+                    statusText.innerHTML = resultDesc;
+                }, 1200);
+            };
+        }
+
+        // --- SIMULATOR BAB 3: KONVERSI ENERGI TERBARUKAN ---
+        function renderBab3Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                        <h5 class="font-bold text-amber-950 text-sm mb-1"><i class="fas fa-bolt mr-2"></i>Simulator Pembangkit Energi Baru Terbarukan (EBT)</h5>
+                        <p class="text-xs text-amber-800 leading-relaxed">Atur intensitas cahaya matahari dan kecepatan hembusan angin untuk memproduksi energi listrik bersih guna menyalakan peralatan bengkel SMK.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Sliders -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Cahaya Matahari (Sel Surya): <span id="val-eko-surya" class="text-amber-600">50%</span></label>
+                                <input type="range" id="input-eko-surya" min="0" max="100" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kecepatan Angin (Turbin): <span id="val-eko-angin" class="text-blue-600">15 Knot</span></label>
+                                <input type="range" id="input-eko-angin" min="0" max="50" value="15" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Output Monitor -->
+                        <div class="bg-slate-900 rounded-xl p-5 text-slate-100 flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Daya EBT</span>
+                                    <div class="text-3xl font-extrabold text-amber-400 mt-1" id="total-daya-ebt">0 Watt</div>
+                                </div>
+                                <div class="text-4xl animate-pulse" id="lampu-status">💡</div>
+                            </div>
+                            <div class="border-t border-slate-800 pt-3 mt-4">
+                                <span class="text-[10px] text-slate-400 block mb-1">Alat SMK yang Dapat Dinyalakan:</span>
+                                <p id="list-peralatan-ebt" class="text-xs text-slate-200">Solder (60W), Laptop (90W)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const inputSurya = document.getElementById('input-eko-surya');
+            const inputAngin = document.getElementById('input-eko-angin');
+            const valSurya = document.getElementById('val-eko-surya');
+            const valAngin = document.getElementById('val-eko-angin');
+            
+            const totalDayaText = document.getElementById('total-daya-ebt');
+            const lampuStatus = document.getElementById('lampu-status');
+            const listPeralatan = document.getElementById('list-peralatan-ebt');
+
+            function updateEBT() {
+                const surya = parseInt(inputSurya.value);
+                const angin = parseInt(inputAngin.value);
+
+                valSurya.innerText = `${surya}%`;
+                valAngin.innerText = `${angin} Knot`;
+
+                // Kalkulasi daya
+                const dayaSurya = Math.round(surya * 3); // maks 300W
+                const dayaAngin = Math.round(angin * 14); // maks 700W
+                const totalDaya = dayaSurya + dayaAngin;
+
+                totalDayaText.innerText = `${totalDaya} Watt`;
+
+                // Perubahan visual lampu
+                if (totalDaya === 0) {
+                    lampuStatus.innerText = "⚫";
+                    lampuStatus.className = "text-4xl opacity-50";
+                    listPeralatan.innerText = "Tidak ada daya untuk menyalakan perangkat.";
+                    listPeralatan.className = "text-xs text-red-400";
+                } else {
+                    lampuStatus.innerText = "💡";
+                    if (totalDaya < 150) {
+                        lampuStatus.className = "text-4xl text-amber-900"; // redup
+                    } else if (totalDaya < 500) {
+                        lampuStatus.className = "text-4xl text-amber-400"; // sedang
+                    } else {
+                        lampuStatus.className = "text-4xl text-yellow-300 drop-shadow-[0_0_10px_rgba(253,224,71,0.8)]"; // terang
+                    }
+
+                    // Deteksi peralatan yang bisa menyala
+                    let items = [];
+                    if (totalDaya >= 60) items.push("Solder Bengkel (60W)");
+                    if (totalDaya >= 150) items.push("Laptop & PC Lab (90W)");
+                    if (totalDaya >= 350) items.push("Air Conditioner (AC) (350W)");
+                    if (totalDaya >= 800) items.push("Mesin Bubut Industri (800W)");
+
+                    if (items.length > 0) {
+                        listPeralatan.innerText = items.join(', ');
+                        listPeralatan.className = "text-xs text-emerald-400";
+                    } else {
+                        listPeralatan.innerText = "Hanya lampu LED kecil.";
+                        listPeralatan.className = "text-xs text-amber-200";
+                    }
+                }
+            }
+
+            inputSurya.addEventListener('input', updateEBT);
+            inputAngin.addEventListener('input', updateEBT);
+            updateEBT();
+        }
+
+        // --- SIMULATOR BAB 4: DISTRIBUSI LOGISTIK ---
+        function renderBab4Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <h5 class="font-bold text-blue-950 text-sm mb-1"><i class="fas fa-map-marked-alt mr-2"></i>Simulator Logistik & Rantai Pasok SMK</h5>
+                        <p class="text-xs text-blue-800 leading-relaxed">Simulasikan rute pengiriman suku cadang atau bahan baku dari pusat logistik ke SMK Negeri 1 Karang Baru untuk meneliti aspek biaya, waktu, dan emisi karbon.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Rute Pengiriman (Asal):</label>
+                                <select id="select-asal-rute" class="w-full p-3 rounded-lg border border-slate-300 text-sm bg-white focus:outline-none">
+                                    <option value="jakarta">Pabrik Pusat (Jakarta)</option>
+                                    <option value="medan">Pusat Distribusi (Medan)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Moda Transportasi:</label>
+                                <select id="select-log-transport" class="w-full p-3 rounded-lg border border-slate-300 text-sm bg-white focus:outline-none">
+                                    <option value="truk">Truk Darat (Reguler)</option>
+                                    <option value="kapal">Kapal Laut (Kargo Lambat)</option>
+                                    <option value="pesawat">Pesawat Kargo (Ekspres)</option>
+                                </select>
+                            </div>
+                            <button id="btn-kirim-kargo" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow flex items-center justify-center gap-2">
+                                <i class="fas fa-truck"></i> Simulasikan Pengiriman
+                            </button>
+                        </div>
+
+                        <!-- Live Metrics -->
+                        <div class="bg-slate-900 rounded-xl p-5 text-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hasil Analisis Keruangan</span>
+                                <div class="grid grid-cols-3 gap-2 mt-3">
+                                    <div class="bg-slate-800/50 p-2 rounded-lg text-center">
+                                        <span class="block text-[9px] text-slate-400">Biaya</span>
+                                        <span id="log-biaya" class="text-sm font-bold text-white">-</span>
+                                    </div>
+                                    <div class="bg-slate-800/50 p-2 rounded-lg text-center">
+                                        <span class="block text-[9px] text-slate-400">Waktu</span>
+                                        <span id="log-waktu" class="text-sm font-bold text-white">-</span>
+                                    </div>
+                                    <div class="bg-slate-800/50 p-2 rounded-lg text-center">
+                                        <span class="block text-[9px] text-slate-400">Emisi CO2</span>
+                                        <span id="log-emisi" class="text-sm font-bold text-white">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Visual Track Animation -->
+                            <div class="mt-4 bg-slate-950 p-3 rounded-lg overflow-hidden relative min-h-[40px]">
+                                <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                                    <span id="lbl-track-asal">Asal</span>
+                                    <span>SMKN 1 KB</span>
+                                </div>
+                                <div class="w-full h-1 bg-slate-800 rounded mt-2 relative">
+                                    <span id="log-vehicle-emoji" class="absolute -top-3 text-sm left-0 transition-all duration-[1500ms] ease-out"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const selectAsal = document.getElementById('select-asal-rute');
+            const selectTransport = document.getElementById('select-log-transport');
+            const btnKirim = document.getElementById('btn-kirim-kargo');
+            
+            const logBiaya = document.getElementById('log-biaya');
+            const logWaktu = document.getElementById('log-waktu');
+            const logEmisi = document.getElementById('log-emisi');
+            const vehicleEmoji = document.getElementById('log-vehicle-emoji');
+            const trackAsal = document.getElementById('lbl-track-asal');
+
+            btnKirim.onclick = function() {
+                const asal = selectAsal.value;
+                const transport = selectTransport.value;
+
+                // Set Asal Label
+                trackAsal.innerText = asal === 'jakarta' ? 'JKT' : 'MDN';
+
+                // Hitung Nilai Estimasi
+                let biayaVal = "";
+                let waktuVal = "";
+                let emisiVal = "";
+                let emoji = "🚚";
+
+                if (transport === 'truk') {
+                    emoji = "🚚";
+                    if (asal === 'jakarta') {
+                        biayaVal = "Rp 1,5 Juta";
+                        waktuVal = "3 - 4 Hari";
+                        emisiVal = "Sedang (150kg)";
+                    } else {
+                        biayaVal = "Rp 400 Ribu";
+                        waktuVal = "1 Hari";
+                        emisiVal = "Rendah (40kg)";
+                    }
+                } else if (transport === 'kapal') {
+                    emoji = "🚢";
+                    if (asal === 'jakarta') {
+                        biayaVal = "Rp 600 Ribu";
+                        waktuVal = "6 - 8 Hari";
+                        emisiVal = "Sangat Rendah (30kg)";
+                    } else {
+                        biayaVal = "Rute laut tidak tersedia untuk jarak dekat.";
+                        waktuVal = "N/A";
+                        emisiVal = "N/A";
+                    }
+                } else if (transport === 'pesawat') {
+                    emoji = "✈️";
+                    if (asal === 'jakarta') {
+                        biayaVal = "Rp 4,5 Juta";
+                        waktuVal = "6 Jam";
+                        emisiVal = "Tinggi (700kg)";
+                    } else {
+                        biayaVal = "Rp 1,8 Juta";
+                        waktuVal = "3 Jam";
+                        emisiVal = "Sangat Tinggi (350kg)";
+                    }
+                }
+
+                // Reset animation & values
+                vehicleEmoji.style.left = '0%';
+                vehicleEmoji.innerText = emoji;
+                
+                logBiaya.innerText = "Menghitung...";
+                logWaktu.innerText = "Menghitung...";
+                logEmisi.innerText = "Menghitung...";
+
+                // Jalankan animasi transit
+                setTimeout(() => {
+                    vehicleEmoji.style.left = '90%';
+                }, 100);
+
+                setTimeout(() => {
+                    logBiaya.innerText = biayaVal;
+                    logWaktu.innerText = waktuVal;
+                    logEmisi.innerText = emisiVal;
+                }, 1600);
+            };
+        }
+
+        // --- SIMULATOR BAB 5: LITERASI DIGITAL & HOAX ---
+        function renderBab5Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+                        <h5 class="font-bold text-indigo-950 text-sm mb-1"><i class="fas fa-network-wired mr-2"></i>Simulator Penyebaran Informasi di Media Sosial</h5>
+                        <p class="text-xs text-indigo-800 leading-relaxed">Atur parameter tingkat Literasi Digital murid di sekolah dan tingkat Sensasionalitas konten berita palsu (hoax) untuk mengamati laju viralitasnya.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tingkat Literasi Digital Murid: <span id="val-literasi" class="text-indigo-600">50%</span></label>
+                                <input type="range" id="input-literasi" min="0" max="100" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Daya Tarik / Sensasional Konten: <span id="val-clickbait" class="text-purple-600">50%</span></label>
+                                <input type="range" id="input-clickbait" min="0" max="100" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                            </div>
+                            <button id="btn-posting" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition shadow flex items-center justify-center gap-2">
+                                <i class="fas fa-share-alt"></i> Posting Berita
+                            </button>
+                        </div>
+
+                        <!-- Network Output -->
+                        <div class="bg-slate-900 rounded-xl p-5 text-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hasil Sosialisasi & Opini Publik</span>
+                                <h6 id="sosial-status-judul" class="text-sm font-bold mt-2">Belum ada aktivitas penyiaran.</h6>
+                                <p id="sosial-status-desc" class="text-[11px] text-slate-400 mt-1">Konfigurasikan slider dan unggah postingan.</p>
+                            </div>
+                            <div class="border-t border-slate-800 pt-3 mt-4">
+                                <span class="text-[10px] text-slate-400 block mb-2">Simulasi Jaringan Komunitas Sekolah (Hijau: Cerdas, Merah: Terprovokasi Hoax)</span>
+                                <div id="sosial-node-grid" class="flex flex-wrap gap-1 justify-center text-lg">
+                                    👤👤👤👤👤👤👤👤👤👤👤👤👤👤👤
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const inputLit = document.getElementById('input-literasi');
+            const inputClick = document.getElementById('input-clickbait');
+            const valLit = document.getElementById('val-literasi');
+            const valClick = document.getElementById('val-clickbait');
+            const btnPosting = document.getElementById('btn-posting');
+            
+            const statusJudul = document.getElementById('sosial-status-judul');
+            const statusDesc = document.getElementById('sosial-status-desc');
+            const nodeGrid = document.getElementById('sosial-node-grid');
+
+            // Event update labels
+            inputLit.oninput = () => valLit.innerText = `${inputLit.value}%`;
+            inputClick.oninput = () => valClick.innerText = `${inputClick.value}%`;
+
+            btnPosting.onclick = function() {
+                const lit = parseInt(inputLit.value);
+                const click = parseInt(inputClick.value);
+
+                // Rumus kalkulasi viralitas hoax
+                // Makin tinggi clickbait dan makin rendah literasi = Hoax makin menyebar luas
+                const provokasiRate = Math.min(100, Math.max(0, click - lit + 50));
+                
+                statusJudul.innerText = "Menganalisis perambatan opini...";
+                statusDesc.innerText = "Menghubungkan antar-node dalam jaringan sosial siswa...";
+                btnPosting.disabled = true;
+
+                setTimeout(() => {
+                    btnPosting.disabled = false;
+                    nodeGrid.innerHTML = '';
+
+                    const totalNodes = 15;
+                    const provokedNodesCount = Math.round((provokasiRate / 100) * totalNodes);
+                    
+                    for (let i = 0; i < totalNodes; i++) {
+                        if (i < provokedNodesCount) {
+                            // Provoked
+                            nodeGrid.innerHTML += `<span class="text-red-500 filter drop-shadow-[0_0_2px_rgba(239,68,68,0.7)]" title="Ikut menyebarkan berita tanpa verifikasi">👤</span>`;
+                        } else {
+                            // Smart
+                            nodeGrid.innerHTML += `<span class="text-emerald-500" title="Verifikasi informasi & bijak bermedia">👤</span>`;
+                        }
+                    }
+
+                    if (provokasiRate > 70) {
+                        statusJudul.innerText = "Hoax Viral & Terjadi Konflik Sosial!";
+                        statusJudul.className = "text-sm font-bold text-red-500 mt-2";
+                        statusDesc.innerText = "Tingkat literasi digital rendah dikombinasikan clickbait provokatif menyebabkan keributan di grup chat sekolah.";
+                    } else if (provokasiRate > 35) {
+                        statusJudul.innerText = "Isu Hangat & Terjadi Perdebatan";
+                        statusJudul.className = "text-sm font-bold text-amber-500 mt-2";
+                        statusDesc.innerText = "Siswa terpecah menjadi dua kubu. Beberapa siswa mencoba memverifikasi kebenaran informasi.";
+                    } else {
+                        statusJudul.innerText = "Hoax Gagal Menyebar!";
+                        statusJudul.className = "text-sm font-bold text-emerald-400 mt-2";
+                        statusDesc.innerText = "Siswa SMKN 1 Karang Baru memiliki pertahanan literasi digital yang kokoh sehingga hoax langsung dipatahkan.";
+                    }
+                }, 1000);
+            };
+        }
+
+        // --- SIMULATOR BAB 6: PERMINTAAN & PENAWARAN ---
+        function renderBab6Simulator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-violet-50 border border-violet-200 rounded-xl p-4">
+                        <h5 class="font-bold text-violet-950 text-sm mb-1"><i class="fas fa-chart-line mr-2"></i>Simulator Hukum Permintaan & Penawaran Pasar</h5>
+                        <p class="text-xs text-violet-800 leading-relaxed">Atur harga jual produk kreatif unit produksi kewirausahaan SMK untuk melihat bagaimana permintaan pembeli dan penawaran penjual bereaksi.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Harga Jual Per Unit: <span id="val-eko-harga" class="text-violet-600">Rp 25.000</span></label>
+                                <input type="range" id="input-eko-harga" min="5000" max="45000" step="5000" value="25000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600">
+                            </div>
+                            <div class="bg-slate-100 p-3 rounded-lg text-xs space-y-1 text-slate-600">
+                                <p class="font-semibold text-slate-800">Prinsip Ekonomi:</p>
+                                <p>&bull; Permintaan: Harga Naik &darr; Permintaan Turun</p>
+                                <p>&bull; Penawaran: Harga Naik &uarr; Penawaran Naik</p>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Graph Visualizer -->
+                        <div class="bg-slate-900 rounded-xl p-5 text-slate-100 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Status Ekonomi Pasar</span>
+                                <h6 id="pasar-status-judul" class="text-sm font-bold text-emerald-400 mt-1">Harga Keseimbangan Tercipta</h6>
+                                <p id="pasar-status-desc" class="text-[11px] text-slate-300 mt-1">Titik equilibrium tercapai secara optimal.</p>
+                            </div>
+
+                            <!-- Live Bar Comparison Chart -->
+                            <div class="space-y-2 mt-4">
+                                <div>
+                                    <span class="text-[9px] text-slate-400 block mb-1">Jumlah Permintaan (Konsumen): <span id="txt-demand-val" class="font-bold text-red-400">50 unit</span></span>
+                                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                                        <div id="bar-demand" class="bg-red-500 h-full transition-all duration-300" style="width: 50%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] text-slate-400 block mb-1">Jumlah Penawaran (Penjual): <span id="txt-supply-val" class="font-bold text-blue-400">50 unit</span></span>
+                                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                                        <div id="bar-supply" class="bg-blue-500 h-full transition-all duration-300" style="width: 50%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const inputHarga = document.getElementById('input-eko-harga');
+            const valHarga = document.getElementById('val-eko-harga');
+            
+            const statusJudul = document.getElementById('pasar-status-judul');
+            const statusDesc = document.getElementById('pasar-status-desc');
+            const txtDemand = document.getElementById('txt-demand-val');
+            const txtSupply = document.getElementById('txt-supply-val');
+            const barDemand = document.getElementById('bar-demand');
+            const barSupply = document.getElementById('bar-supply');
+
+            function updatePasar() {
+                const harga = parseInt(inputHarga.value);
+                valHarga.innerText = `Rp ${harga.toLocaleString('id-ID')}`;
+
+                // Formulas
+                // Permintaan berbanding terbalik dengan harga
+                const demandQty = Math.max(10, 100 - Math.floor((harga - 5000) * 0.002));
+                // Penawaran berbanding lurus dengan harga
+                const supplyQty = Math.min(100, Math.floor(harga * 0.002));
+
+                // Render Bar
+                barDemand.style.width = `${demandQty}%`;
+                barSupply.style.width = `${supplyQty}%`;
+
+                txtDemand.innerText = `${demandQty} porsi`;
+                txtSupply.innerText = `${supplyQty} porsi`;
+
+                // Status Analisis
+                if (harga < 20000) {
+                    statusJudul.innerText = "Terjadi Kelangkaan Barang!";
+                    statusJudul.className = "text-sm font-bold text-red-400 mt-1";
+                    statusDesc.innerText = "Harga terlalu murah sehingga permintaan meledak sedangkan penjual enggan memproduksi barang.";
+                } else if (harga > 30000) {
+                    statusJudul.innerText = "Surplus Stok / Barang Menumpuk!";
+                    statusJudul.className = "text-sm font-bold text-amber-400 mt-1";
+                    statusDesc.innerText = "Harga dinilai terlalu mahal sehingga stok barang menumpuk tidak laku dibeli konsumen.";
+                } else {
+                    statusJudul.innerText = "Harga Keseimbangan (Equilibrium)!";
+                    statusJudul.className = "text-sm font-bold text-emerald-400 mt-1";
+                    statusDesc.innerText = "Penawaran dan permintaan setara. Alokasi sumber daya pasar efisien, menguntungkan pembeli dan produsen.";
+                }
+            }
+
+            inputHarga.addEventListener('input', updatePasar);
+            updatePasar();
+        }
+
+        // --- 9. Initializer ---
+        window.onload = function() {
+            // Load Default Bab on Launch
+            loadBabData();
+            // Load Default Simulator
+            loadSimulator();
+        };
+    </script>
+</body>
+</html>
